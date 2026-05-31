@@ -20,17 +20,33 @@ meegle user me --format json     # read user_key into config.user_key
 
 ## Step 1 — pick spaces
 
-Ask which Meegle space(s) the user works in — by name, slug, or by pasting a Meegle URL:
+Ask which Meegle space(s) the user works in. **Prefer the slug from the URL** — it's the most reliable:
 
-> "ปกติทำงานใน space ไหนของ Meegle ครับ? บอกชื่อ/พาสต์ลิงก์มาได้เลย (มีหลายอันก็ได้)"
+> "ปกติทำงานใน space ไหนของ Meegle ครับ? วิธีที่ชัวร์สุดคือก๊อป **slug จาก URL** มา (เช่น `9pxv57` — อยู่ใน address bar ตอนเปิด space นั้น) หรือจะบอกชื่อเต็มก็ได้ (มีหลายอันก็ได้)"
 
-`project search` resolves a name (it does not list everything), so resolve each one the user names:
+> ⚠️ **`project search` matches the space name EXACTLY — not fuzzy/partial.** A partial name ("Product") or a slightly-off spelling returns **empty** (`projects: []`). Only the exact full name works. The **slug never has this problem** — steer the user to the slug, and treat any name they give as a best-effort guess that may miss.
 
-```bash
-meegle project search --project-key "<name-or-slug-or-key>" --format json
-```
+### Resolve each space (slug-first, with fallback)
 
-Save each chosen space into `config.json` → `spaces[]` (project_key, name, slug). Ask which is the default → `default_project_key`.
+`--project-key` accepts the **slug**, the **exact name**, or the long **project key** — all work for every later command. Resolve like this:
+
+1. **Slug or pasted URL** (extract the slug from the URL path) → validate directly:
+   ```bash
+   meegle workitem meta-types --project-key "<slug>" --format json   # returns list[] of work-item types
+   ```
+   Got a `list[]` of types back → ✅ valid.
+
+2. **A name** → confirm it resolves:
+   ```bash
+   meegle project search --project-key "<name>" --format json   # returns projects[] (name, project_key, simple_name=slug)
+   ```
+   - Exactly one hit → grab its `simple_name` (slug) and use that as the canonical `project_key`.
+   - **`projects: []` (empty)** → the name wasn't an exact match. **Don't give up or retry name variants — ask for the slug/URL** (Thai): "หาด้วยชื่อนี้ไม่เจอครับ (ระบบต้องตรงเป๊ะ) — ขอ slug จาก URL หรือพาสต์ลิงก์ space มาได้ไหมครับ?" then resolve via step 1.
+   - Multiple hits → show them and let the user pick.
+
+3. Store the **slug** as `project_key` in the config (works everywhere, human-recognizable).
+
+Save each chosen space into `config.json` → `spaces[]` (project_key = the slug, name, slug). Ask which is the default → `default_project_key`.
 
 ## Step 2 — defaults
 
