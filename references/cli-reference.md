@@ -103,6 +103,25 @@ Field values are passed with **`--fields`**. Two accepted forms:
 
 Compute `date`/`schedule` millisecond values with Python (Bangkok tz) — see [timelog.md](timelog.md). (Type-key spelling can vary slightly by version, e.g. `work_item_related_select` vs `workitem_related_select` — match what discovery returns.)
 
+### Rich text in `multi_text` fields (e.g. Description)
+
+`multi_text` fields render **Markdown**, so you can format the description with headings/bold/bullets instead of a flat blob.
+
+⚠️ **The one hard rule: escape line breaks as `\n` inside the JSON string.** A **raw** newline in the `field_value` makes create/update fail (server error / invalid JSON). Always use the `\n` escape.
+
+Supported (verified on create + update):
+- `**bold**`, `*italic*` / `_italic_`, `~~strikethrough~~`, `` `code` ``, `<u>underline</u>`
+- `- ` bullet lists, `1. ` numbered lists
+- use sparingly: code block ` ```lang\n...\n``` `, quote `> text`, horizontal rule `---`, colour `<span style=\"color: rgb(245,74,69)\">x</span>`, highlight `<span style=\"background-color: rgb(250,211,85)\">x</span>` (escape the inner quotes `\"` inside the JSON)
+
+Example:
+
+```bash
+--fields '{"field_key":"description","field_value":"**Summary line.**\n- point A\n- point B\n\n1. step one\n2. step two"}'
+```
+
+Keep it readable — a bold summary line plus a few bullets is plenty; don't over-format.
+
 ## Write
 
 ### Create a work item / card

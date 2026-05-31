@@ -30,6 +30,7 @@ Walk the type's `create_fields` in order. **`template` comes first** (required o
 - **user / multi_user:** default to the user's own `user_key`; for someone else resolve via `meegle user search --user-keys "<name>" --project-key <PK> --format json`. Multi-user is a **stringified** array. Don't guess keys. (Owner/assignee are often a *role*, not a field — set those via `--role-operate` after create; see below.)
 - **date:** ask plainly ("กำหนดส่งวันไหน?") and convert to epoch ms **as a string** with Python (snippet in [timelog.md](timelog.md)).
 - **number / text:** ask directly (as a string).
+- **multi_text (e.g. Description):** supports **Markdown** — you may format it with a bold summary line + bullets. ⚠️ Escape line breaks as `\n` (a raw newline crashes create). See the "Rich text" section in [cli-reference.md](cli-reference.md).
 - Optional `create_fields`: offer them, allow "ข้าม".
 
 Build each value as a **string** per the cli-reference value_type table — stringify any array/object.
