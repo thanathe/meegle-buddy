@@ -1,0 +1,26 @@
+# meegle-buddy is config-free in the repo. Personal discovered config lives in
+# ~/.claude/meegle-buddy/ and must NEVER be committed. These rules are a safety net
+# in case anyone ever copies config into the repo by mistake.
+
+# Any local/personal config
+config.json
+config/
+**/meegle-buddy/config.json
+**/meegle-buddy/projects/
+*.local.json
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs / scratch
+*.log
+scratch/
