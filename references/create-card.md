@@ -26,7 +26,7 @@ Walk the type's `create_fields` in order. **`template` comes first** (required o
 
 - **Required first.** Every required field (and everything in `create_fields`) must have a value before submit.
 - **Title (`name`):** "ชื่อการ์ด / หัวข้อ คืออะไรครับ?".
-- **select / multi_select:** present `options` labels in Thai (AskUserQuestion), map the chosen label → its `value` (the option_id); send the **id**, not the label. Multi-select must be **stringified** (see cli-reference table). No stored options → ask the user to type it, or read an existing card to show valid values.
+- **select / multi_select:** present `options` labels in Thai (AskUserQuestion), then map the chosen label → its `value` (the **option_id**). ⚠️ Put the **option_id** in `field_value`, NEVER the human label — e.g. if the user picks "Option A" whose entry is `{label:"Option A", value:"opt_a1b2c3"}`, send `field_value:"opt_a1b2c3"`. For `multi_select` the value is a **stringified** array of `{option_id}` objects (see cli-reference.md). No stored options → ask the user to type it, or read an existing card to show valid values.
 - **user / multi_user:** default to the user's own `user_key`; for someone else resolve via `meegle user search --user-keys "<name>" --project-key <PK> --format json`. Multi-user is a **stringified** array. Don't guess keys. (Owner/assignee are often a *role*, not a field — set those via `--role-operate` after create; see below.)
 - **date:** ask plainly ("กำหนดส่งวันไหน?") and convert to epoch ms **as a string** with Python (snippet in [timelog.md](timelog.md)).
 - **number / text:** ask directly (as a string).
