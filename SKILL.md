@@ -24,14 +24,23 @@ The skill **never hardcodes** project keys, work-item types, field keys, templat
 
 ## Prerequisites (check on first run)
 
-This skill drives the **`meegle`** CLI (NOT `lark-cli`). Each person must have it installed and logged in. On the very first invocation, verify:
+This skill drives the **`meegle`** CLI (NOT `lark-cli`) — the official Larksuite tool (`@lark-project/meegle`, https://github.com/larksuite/meegle-cli). Each person must have it installed and logged in. On the very first invocation, verify:
 
 ```bash
-command -v meegle                   # must exist
+command -v meegle                   # must exist  (install: npm install -g @lark-project/meegle)
 meegle auth status --format json    # must show "authenticated": true
 ```
 
 If `meegle` is missing or not authenticated, stop and walk the user through setup (in Thai) — see the "Prerequisites" section of the [README](README.md). Do not try to do Meegle work until `auth status` succeeds.
+
+**Login guidance (important):** when guiding login, always use the **device-code** flow, NOT plain `meegle auth login`. The plain flow relies on auto-opening a browser + a localhost callback, which hangs or fails unpredictably inside agent shells (Claude Code), SSH, and some terminals. Tell the user (Thai) to run:
+
+```bash
+meegle config set host <their-host>     # e.g. project.larksuite.com / project.feishu.cn / meegle.com
+meegle auth login --device-code         # prints a link + code to open in any browser
+```
+
+If the user reports "browser won't open / login hangs", that's exactly this — point them to `--device-code`.
 
 ## Routing — pick the task
 

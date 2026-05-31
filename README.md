@@ -50,13 +50,18 @@ This is the little program that actually talks to Feishu / Lark Project. You ins
    npm install -g @lark-project/meegle
    ```
 
-3. Log in to your Lark / Feishu account:
+3. Log in to your Lark / Feishu account. **Use the device-code flow** (this is the reliable one):
 
    ```bash
-   meegle auth login
+   meegle config set host project.larksuite.com    # set your company's host once
+   meegle auth login --device-code
    ```
 
-   Follow the prompts (it will open a browser to sign in). If it asks for a *host*, pick the one your company uses — for many teams that's `project.larksuite.com`.
+   It prints a link and a code — open the link in any browser (your phone works too), enter the code, approve, and the command finishes by itself.
+
+   > 💡 **Why not just `meegle auth login`?** The plain version tries to pop open a browser automatically. Inside Claude Code, VS Code's terminal, an SSH session, or some setups, that browser **doesn't open reliably (works sometimes, hangs other times)**. `--device-code` avoids all that — it just gives you a link to open yourself. If your teammates say *"the login browser won't open"*, this is the fix.
+   >
+   > Pick the `host` your company uses: `project.larksuite.com`, `project.feishu.cn`, or `meegle.com` (ask a colleague if unsure).
 
 4. Check it worked:
 
@@ -64,9 +69,11 @@ This is the little program that actually talks to Feishu / Lark Project. You ins
    meegle auth status --format json
    ```
 
-   You want to see `"authenticated": true`. If you see an error, run `meegle auth login` again.
+   You want to see `"authenticated": true`. If not, run `meegle auth login --device-code` again.
 
-> ⚠️ If installing `meegle` fails, ask whoever set up Lark Project at your company — some teams use a different package name or a private installer. The skill itself doesn't change; only this install step does.
+> ⚠️ If installing `meegle` fails, ask whoever set up Lark Project at your company — some teams use a different host or a private setup. The skill itself doesn't change; only this install step does.
+>
+> 📖 **The `meegle` CLI is an official open-source tool by Larksuite** — full docs, all commands, and other agent skills (Cursor / Windsurf / Gemini CLI / etc.): **https://github.com/larksuite/meegle-cli**
 
 ### Step 3 — Install the skill
 
@@ -103,12 +110,13 @@ That's it. You never have to remember any field names or IDs — the skill asks 
 
 # Part 2: Quick install (for Claude Code users)
 
-**Prerequisites:** the `meegle` CLI installed and authenticated.
+**Prerequisites:** the [`meegle` CLI](https://github.com/larksuite/meegle-cli) (official, by Larksuite) installed and authenticated.
 
 ```bash
-npm install -g @lark-project/meegle      # or your team's install method
-meegle auth login
-meegle auth status --format json          # expect "authenticated": true
+npm install -g @lark-project/meegle
+meegle config set host project.larksuite.com   # your tenant host
+meegle auth login --device-code                # device-code avoids browser-callback hangs in agent shells
+meegle auth status --format json               # expect "authenticated": true
 ```
 
 **Install the skill:**
@@ -160,7 +168,8 @@ Because it lives in your home folder, your field map stays **private to you** an
 |---|---|
 | `claude: command not found` | Claude Code isn't installed / not on PATH — re-run its installer, reopen Terminal. |
 | `meegle: command not found` | Install Node.js, then `npm install -g @lark-project/meegle`. |
-| `"authenticated": false` or auth errors | Run `meegle auth login` again; make sure you picked the right host. |
+| **Login browser won't open / opens sometimes / login hangs** | Don't use plain `meegle auth login`. Run `meegle auth login --device-code` instead — it gives you a link to open yourself (no auto-browser, works in Claude Code / SSH / VS Code terminals). |
+| `"authenticated": false` or auth errors | Run `meegle auth login --device-code` again; make sure the host is right (`meegle config set host <host>`). |
 | The skill doesn't trigger | Make sure the folder is exactly at `~/.claude/skills/meegle-buddy/` with `SKILL.md` inside; restart Claude Code. |
 | It can't find your space | Give it the **slug** from your Meegle URL (the short code), or paste the full URL. |
 | A create fails saying a field is required | Tell the skill the value — it will add that field to your checklist so it's asked next time. |
@@ -181,6 +190,20 @@ Because it lives in your home folder, your field map stays **private to you** an
 | `references/config-format.md` | The shape of the saved config |
 
 It's a thin, **discovery-driven** layer over the `meegle` CLI: it learns your field map once, then drives `meegle workitem` / `meegle workflow` for you.
+
+---
+
+## Official references
+
+The `meegle` CLI this skill drives is an **official open-source tool by Larksuite**. For full command docs, auth options, config, and other agent skills:
+
+- 📦 **Repo & docs:** https://github.com/larksuite/meegle-cli
+- 📥 **npm package:** https://www.npmjs.com/package/@lark-project/meegle
+- 🤖 **Official Meegle agent skill** (works for Cursor / Windsurf / Gemini CLI / Claude Code / etc.) — installable with:
+  ```bash
+  npx skills add larksuite/meegle-cli -y -g
+  ```
+  meegle-buddy is a *complementary* guided layer on top; you can install the official skill too if you want the full command catalog and MQL reference.
 
 ---
 
