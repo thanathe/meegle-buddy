@@ -24,11 +24,12 @@ meegle user me --format json         # current user -> user_key
 
 ## Discovery (read-only) — used at init
 
-`--project-key` accepts the **slug** (the short code in the Meegle URL, e.g. `ab12cd`), the **space name**, OR the long **project key** — all of them work for every command.
+`--project-key` accepts the **slug** (the short code in the Meegle URL, e.g. `ab12cd`), the **exact space name**, OR the long **project key** — all of them work for every command. **Prefer the slug** — `project search` matches names *exactly*, so a partial/misspelled name finds nothing (see init.md Step 1).
 
 ```bash
-# Resolve a space (slug/name -> project_key). Returns projects[].
-meegle project search --project-key "<slug-or-name-or-key>" --format json
+# Resolve a space name -> slug + project_key. Returns projects[] (name, project_key, simple_name=slug).
+# ⚠️ EXACT name match only — a partial/misspelled name returns projects: [] (empty). The slug never has this issue.
+meegle project search --project-key "<exact-name-or-slug>" --format json
 
 # Work-item types in a space. Returns list[]. Skip disabled types (is_disable == 1).
 meegle workitem meta-types --project-key <PK> --format json
