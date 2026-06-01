@@ -59,7 +59,18 @@ Capture the new work-item id from the JSON output.
   meegle workitem update --work-item-id <NEW_ID> --project-key <PK> \
     --role-operate '[{"op":"add","role_key":"<ROLE_KEY>","user_keys":["<USER_KEY>"]}]' --format json
   ```
+- **Link / relation fields** (`workitem_related_*`) — these can fail **at create** with `字段「…」当前选项值已失效` even when the target id is valid. If so, create the card WITHOUT the link, then set it via a follow-up `workitem update --fields` (value = the target work-item id as a string).
 - Any field the create response shows empty but you intended to set — re-send via `workitem update`.
+
+### Step 5 — verify before reporting done (do NOT skip)
+
+A `"success"` / `mcp_result` response does **not** prove a value stuck. Read the card back and confirm each intended field literally appears:
+```bash
+meegle workitem get --work-item-id <NEW_ID> --project-key <PK> \
+  --fields "<each field you set>" --format json
+# + workflow get-node ... if you set node schedules
+```
+Tick every field you meant to set — everything in the config's `create_fields`, plus the follow-ups you intended (role owner, relation/link fields, node schedules, estimate/effort). A half-filled card (links/schedule/estimate silently missing) is the most common failure; this read-back catches it.
 
 Report the new card's id/link in Thai. For estimate/schedule, continue with [schedule](schedule.md). To log time against it, see [timelog](timelog.md).
 

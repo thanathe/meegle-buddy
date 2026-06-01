@@ -169,25 +169,30 @@ meegle workitem update \
 
 ### Per-node schedule (estimate dates + owner on a workflow node)
 
+🚫 **The `--node-schedule '<json>'` flag does NOT work** — it errors `need STRUCT type, but got: STRING` (the CLI marshals the JSON object as a string). Same for `-P`/`--params`. ✅ **Use `--set` dot-path.** `owners` needs array-index `owners[0]=` (plain `owners=<key>` → `unsupported type:float64, expected type:LIST`). `points` accepts floats.
+
 ```bash
-# schedule (dates + points) for a node — node-id is the node's state_key
+# schedule (dates + points + owner) for a node in ONE call — node-id is the node's state_key
 meegle workflow update-node \
   --work-item-id <ID> --node-id <STATE_KEY> --project-key <PK> \
-  --node-schedule '{"estimate_start_date":<ms>,"estimate_end_date":<ms>,"owners":["<USER_KEY>"],"points":<days>}'
-
-# owners (separate call!)
-meegle workflow update-node \
-  --work-item-id <ID> --node-id <STATE_KEY> --project-key <PK> \
-  --node-owners '["<USER_KEY>"]'
+  --set node_schedule.estimate_start_date=<ms> \
+  --set node_schedule.estimate_end_date=<ms> \
+  --set node_schedule.points=<days> \
+  --set 'node_schedule.owners[0]=<USER_KEY>'
 ```
+Returns `"success"`. The owner inherited from the assignee role is reused via `owners[0]` — no separate `--node-owners` call needed. (Confirmed working 2026-06-01.)
 
-> `workflow update-node` **cannot change schedule, per-person schedule, and owners in one call** — split them. For per-person schedules use `--schedules` (array, one entry per person). If a shape is rejected, read an item that already has node schedules (`workflow get-node`) and mirror it.
+> For per-person schedules use `--schedules` (array, one entry per person). If a shape is rejected, read an item that already has node schedules (`workflow get-node`) and mirror it.
 
 ## When a command fails (self-heal)
 
 | Error contains | Fix |
 |---|---|
 | `need STRING type, but got: LIST` / `MAP` | the `field_value` must be a **stringified** JSON string, not a raw array/object |
+| `need STRUCT type, but got: STRING` (on `update-node`) | don't pass `--node-schedule '<json>'` — use `--set node_schedule.<key>=<val>` dot-path |
+| `unsupported type:float64, expected type:LIST` (owners) | set owners with array-index: `--set 'node_schedule.owners[0]=<key>'`, not `owners=<key>` |
+| `计算字段值不可编辑` / `无权编辑 "<field>"` | the field is **auto-calculated/rollup** (e.g. Complexity, parent estimate) — don't write it; set the driving inputs instead |
+| `字段「…」当前选项值已失效` (relation/link at create) | create WITHOUT the link, then set it via a follow-up `workitem update --fields` |
 | `invalid select option` | use a valid option_id from `meta-fields`; if ambiguous, ask the user |
 | `creating ... missing template` | add `{"field_key":"template","field_value":"<id>"}` |
 | `node not found` | get the real node state_key via `workflow get-node` — don't guess |
