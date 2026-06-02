@@ -191,7 +191,8 @@ Returns `"success"`. The owner inherited from the assignee role is reused via `o
 | `need STRING type, but got: LIST` / `MAP` | the `field_value` must be a **stringified** JSON string, not a raw array/object |
 | `need STRUCT type, but got: STRING` (on `update-node`) | don't pass `--node-schedule '<json>'` — use `--set node_schedule.<key>=<val>` dot-path |
 | `unsupported type:float64, expected type:LIST` (owners) | set owners with array-index: `--set 'node_schedule.owners[0]=<key>'`, not `owners=<key>` |
-| `计算字段值不可编辑` / `无权编辑 "<field>"` | the field is **auto-calculated/rollup** (e.g. Complexity, parent estimate) — don't write it; set the driving inputs instead |
+| `计算字段值不可编辑` / `无权编辑 "<field>"` | either the field is **auto-calculated/rollup** (e.g. Complexity, parent estimate) — don't write it; OR you're **not the card's owner/creator** (can't edit others' cards) — post a comment or ask the owner instead |
+| `create comment fail` (Service Internal Error, on `comment add`) | comment content must be **plain single-line text** — drop multi-line / markdown / emoji; also ensure `--project-key` is passed (`project_key is empty` if omitted) |
 | `字段「…」当前选项值已失效` (relation/link at create) | create WITHOUT the link, then set it via a follow-up `workitem update --fields` |
 | `invalid select option` | use a valid option_id from `meta-fields`; if ambiguous, ask the user |
 | `creating ... missing template` | add `{"field_key":"template","field_value":"<id>"}` |
