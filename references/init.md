@@ -22,7 +22,7 @@ meegle user me --format json     # read user_key into config.user_key
 
 Ask which Meegle space(s) the user works in. **Prefer the slug from the URL** — it's the most reliable:
 
-> "ปกติทำงานใน space ไหนของ Meegle ครับ? วิธีที่ชัวร์สุดคือก๊อป **slug จาก URL** มา (เช่น `ab12cd` — อยู่ใน address bar ตอนเปิด space นั้น) หรือจะบอกชื่อเต็มก็ได้ (มีหลายอันก็ได้)"
+> "ปกติทำงานใน space ไหนของ Meegle ครับ? วิธีที่ชัวร์สุดคือก๊อป **slug จาก URL** มา (เช่น `ab12cd` — โค้ดสั้นๆ ใน address bar ตอนเปิด space นั้น) หรือจะบอกชื่อเต็มก็ได้ (มีหลายอันก็ได้)"
 
 > ⚠️ **`project search` matches the space name EXACTLY — not fuzzy/partial.** A partial name ("Product") or a slightly-off spelling returns **empty** (`projects: []`). Only the exact full name works. The **slug never has this problem** — steer the user to the slug, and treat any name they give as a best-effort guess that may miss.
 
