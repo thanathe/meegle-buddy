@@ -21,11 +21,11 @@ If none of those give a setter (the normal case), the node binding must go throu
 
 ## Path A — guide the user to click it (works for everyone, no extra tools)
 
-Tell the user (Thai) to do this in the Meegle web page of the parent card:
+Walk the user through these clicks on the Meegle web page of the parent card (phrase each step to them in Thai at runtime):
 
-1. คลิก node ที่ต้องการ (เช่น "Business Analysis") ให้ panel ของ node เปิดขึ้น
-2. ที่ตาราง child cards กดลูกศร ▾ ข้างปุ่ม **"Add …"** → **Add current** → **This space** → เลือกชนิดการ์ด
-3. ติ๊กการ์ดที่เพิ่งสร้าง → **Confirm**
+1. Click the target node (e.g. "Business Analysis") so the node's panel opens.
+2. In the node's child-card table, click the ▾ caret next to the **"Add …"** button → **Add current** → **This space** → pick the card type.
+3. Tick the just-created card → **Confirm**.
 
 This is the safe default — recommend it whenever the session has no browser-control MCP connected.
 
