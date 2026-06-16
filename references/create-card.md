@@ -61,6 +61,7 @@ Capture the new work-item id from the JSON output.
   ```
 - **Link / relation fields** (`workitem_related_*`) — these can fail **at create** with `字段「…」当前选项值已失效` even when the target id is valid. If so, create the card WITHOUT the link, then set it via a follow-up `workitem update --fields` (value = the target work-item id as a string).
 - Any field the create response shows empty but you intended to set — re-send via `workitem update`.
+- **Show under a specific story node** — if the parent is a node-driven workflow and the user wants the card under a particular node (not just the parent's rollup list), the link field is not enough. Follow [node-binding.md](node-binding.md) (the CLI can't set the node-edge; it's a web-UI/endpoint step).
 
 ### Step 5 — verify before reporting done (do NOT skip)
 
