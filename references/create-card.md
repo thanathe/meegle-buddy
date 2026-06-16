@@ -27,7 +27,7 @@ Walk the type's `create_fields` in order. **`template` comes first** (required o
 - **Required first.** Every required field (and everything in `create_fields`) must have a value before submit.
 - **Title (`name`):** "ชื่อการ์ด / หัวข้อ คืออะไรครับ?".
 - **select / multi_select:** present `options` labels in Thai (AskUserQuestion), then map the chosen label → its `value` (the **option_id**). ⚠️ Put the **option_id** in `field_value`, NEVER the human label — e.g. if the user picks "Option A" whose entry is `{label:"Option A", value:"opt_a1b2c3"}`, send `field_value:"opt_a1b2c3"`. For `multi_select` the value is a **stringified** array of `{option_id}` objects (see cli-reference.md). No stored options → ask the user to type it, or read an existing card to show valid values.
-- **user / multi_user:** default to the user's own `user_key`; for someone else resolve via `meegle user search --user-keys "<name>" --project-key <PK> --format json`. Multi-user is a **stringified** array. Don't guess keys. (Owner/assignee are often a *role*, not a field — set those via `--role-operate` after create; see below.)
+- **user / multi_user:** default to the user's own `user_key`; for someone else resolve via `meegle user search --user-keys "<name>" --project-key <PK> --format json`. Multi-user is a **stringified** array. Don't guess keys. (Owner/assignee are often a *role*, not a field — usually set via `--role-operate` after create; **but in some spaces the owner role is REQUIRED at create** — see Follow-ups below.)
 - **date:** ask plainly ("กำหนดส่งวันไหน?") and convert to epoch ms **as a string** with Python (snippet in [timelog.md](timelog.md)).
 - **number / text:** ask directly (as a string).
 - **multi_text (e.g. Description):** supports **Markdown** — you may format it with a bold summary line + bullets. ⚠️ Escape line breaks as `\n` (a raw newline crashes create). See the "Rich text" section in [cli-reference.md](cli-reference.md).
@@ -54,11 +54,12 @@ Capture the new work-item id from the JSON output.
 
 ### Follow-ups (set after create)
 
-- **Owner / assignee** — via `--role-operate` (role key from config `roles`):
+- **Owner / assignee** — usually via `--role-operate` *after* create (role key from config `roles`):
   ```bash
   meegle workitem update --work-item-id <NEW_ID> --project-key <PK> \
     --role-operate '[{"op":"add","role_key":"<ROLE_KEY>","user_keys":["<USER_KEY>"]}]' --format json
   ```
+  ⚠️ **Some spaces make the owner role REQUIRED at create** — then a plain create errors with the role name "必填" (required). In that case pass the owner **in the create `--fields` itself**, as a field whose key is the fully-qualified role field `role_<project_key>_<work_item_type_key>_owner` and whose `field_value` is the **single user_key as a string** (not an array). Discover whether this applies from `meta-create-fields` (the role may be listed) or by reacting to the "必填" error; record it on the type's config so it's done up-front next time. `--role-operate` and the `role_owners` param are **ignored** by `create` in these spaces — it must be a field.
 - **Link / relation fields** (`workitem_related_*`) — these can fail **at create** with `字段「…」当前选项值已失效` even when the target id is valid. If so, create the card WITHOUT the link, then set it via a follow-up `workitem update --fields` (value = the target work-item id as a string).
 - Any field the create response shows empty but you intended to set — re-send via `workitem update`.
 - **Show under a specific story node** — if the parent is a node-driven workflow and the user wants the card under a particular node (not just the parent's rollup list), the link field is not enough. Follow [node-binding.md](node-binding.md) (the CLI can't set the node-edge; it's a web-UI/endpoint step).

@@ -74,6 +74,10 @@ Reuse the captured shape; read the CSRF value live from the cookie (find the `*c
 ```
 Success = `{"code":0,...}`. A `401` with code `10022 "CSRF Failed"` means the CSRF header name or value is wrong — re-check the captured header name (it is the Meego-specific one, NOT `x-csrf-token`) and the cookie value.
 
+**Troubleshooting the in-page fetch (the Meego SPA is heavy):**
+- **Don't `await` the fetch inside the `javascript_tool` eval.** On a busy/loading page the eval's await can exceed the MCP's ~45s `Runtime.evaluate` cap and report "renderer frozen", even though the request would have succeeded. Instead **fire-and-store**: kick off the fetch, write its result to a global (`window.__bindResult = ...` in a `.then()`), return immediately, then **poll** that global with a separate tiny eval (`window.__bindResult`) every few seconds.
+- **If the card page itself is stuck** (`document.readyState` stays `"loading"`, evals keep timing out), don't fight it: open a **fresh tab on the same host** (`tabs_create_mcp` → `navigate` to e.g. `https://<host>/`, a lighter page that reaches `readyState:"complete"`) and fire the fetch from there. The session cookie + CSRF are shared across the whole host, so the bind still works; close the helper tab after.
+
 ### B4. Verify
 `navigate` to refresh the parent page, open the node, confirm the node's child count went up (or `meegle` read-back of the parent's rollup field shows the child).
 
