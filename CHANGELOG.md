@@ -2,6 +2,10 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [0.1.11] — 2026-06-16
+### Added
+- **timelog / cli-reference**: a "VERIFY the link stuck" step, because a `work_item_related_select` link **fails silently on the wrong target type** — give it a wid whose work-item type isn't in the field's `related_work_item_info` (e.g. a parent/grouping item instead of the child it actually wants) and the API returns success-with-no-error (`{"mcp_result":""}`) but stores `null`. After setting any relation link, read it back via MQL (`workitem get` brief omits relation fields); a new self-heal row covers the "set OK but reads null" case. Also: if MQL shows the link set but the card UI says "Empty", that's a **stale UI cache** → hard-refresh. Kept fully discovery-based — the accepted type comes from each field's `related_work_item_info`, nothing hardcoded.
+
 ## [0.1.10] — 2026-06-16
 ### Changed
 - **node-binding**: rewrote Path A (manual UI steps) from Thai to English so the skill body stays English-only and cheaper to load. Only short Thai trigger/sample phrases remain by design (intent detection + user-facing examples).

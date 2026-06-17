@@ -104,6 +104,8 @@ Field values are passed with **`--fields`**. Two accepted forms:
 
 Compute `date`/`schedule` millisecond values with Python (Bangkok tz) — see [timelog.md](timelog.md). (Type-key spelling can vary slightly by version, e.g. `work_item_related_select` vs `workitem_related_select` — match what discovery returns.)
 
+> ⚠️ **`work_item_related_select` fails SILENTLY when the target is the wrong work-item TYPE.** Each related-select accepts only the type(s) declared in its `related_work_item_info[].work_item_type` (from `meta-fields`). Pass a wid of any **other** type and the API returns success-with-no-error (`{"mcp_result":""}`) but stores **null** — the link silently vanishes. (It also does NOT apply at `create` — set relation links with a follow-up `update`.) **So after setting any relation link, VERIFY it via MQL:** `SELECT \`<field>\` FROM ... WHERE \`work_item_id\`=<id>` (`workitem get` brief omits relation fields). If MQL shows it set but the user sees "Empty" on the card, that's a **stale UI cache** — hard-refresh. _(Tip: if the user hands you a wid that won't link, it's often a parent/grouping item of the wrong type — read its `work_item_type` and find the child of the accepted type.)_
+
 ### Rich text in `multi_text` fields (e.g. Description)
 
 `multi_text` fields render **Markdown**, so you can format the description with headings/bold/bullets instead of a flat blob.
@@ -194,6 +196,7 @@ Returns `"success"`. The owner inherited from the assignee role is reused via `o
 | `计算字段值不可编辑` / `无权编辑 "<field>"` | either the field is **auto-calculated/rollup** (e.g. Complexity, parent estimate) — don't write it; OR you're **not the card's owner/creator** (can't edit others' cards) — post a comment or ask the owner instead |
 | `create comment fail` (Service Internal Error, on `comment add`) | comment content must be **plain single-line text** — drop multi-line / markdown / emoji; also ensure `--project-key` is passed (`project_key is empty` if omitted) |
 | `字段「…」当前选项值已失效` (relation/link at create) | create WITHOUT the link, then set it via a follow-up `workitem update --fields` |
+| relation/link set returns OK but the value reads back **null** (no error) | **wrong target TYPE** — the related-select only accepts the type(s) in its `related_work_item_info` (`meta-fields`); pass a wid of that type, then verify via MQL. (If MQL is set but the card shows "Empty", it's a stale UI cache — hard-refresh.) |
 | `invalid select option` | use a valid option_id from `meta-fields`; if ambiguous, ask the user |
 | `creating ... missing template` | add `{"field_key":"template","field_value":"<id>"}` |
 | `node not found` | get the real node state_key via `workflow get-node` — don't guess |

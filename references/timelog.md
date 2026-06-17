@@ -81,4 +81,16 @@ meegle workitem update --work-item-id <NEW_ID> --project-key <PK> \
 
 If a value is rejected with `need STRING type ...`, stringify it (see cli-reference). If unsure of a field's shape, read an existing time record (`meegle workitem get`) and mirror it.
 
+### Step 6 — VERIFY the parent link stuck (it fails silently)
+
+The `link_field` is a `work_item_related_select` — it accepts only the work-item type(s) listed in its `related_work_item_info` (from `meta-fields`). Set it to a wid of any **other** type and the API returns **success with no error but stores null**. So after creating, read each record's link back via MQL and confirm it's not null:
+
+```bash
+meegle workitem query --project-key <PK> \
+  --mql "SELECT \`<link_field>\` FROM \`<PK>\`.\`<TIMERECORD_TYPE>\` WHERE \`work_item_id\`=<NEW_ID> LIMIT 1" --format json
+# null → NOT linked (wrong target type? give a wid of the type the field accepts); {"key_label_value":{...}} → OK
+```
+
+If the user says "the card shows Empty" but MQL shows the link **is** set, it's just a **stale UI cache** — tell them to hard-refresh (Cmd/Ctrl+Shift+R). `workitem get` brief also omits relation fields, so always check with MQL, not `get`.
+
 Report success in Thai (how many records, total hours). If a day looks short (e.g. a known recurring meeting is missing), gently ask — but never invent entries.
