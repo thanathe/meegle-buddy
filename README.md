@@ -6,6 +6,8 @@ It's built to be shared with a whole team. Developers and non-developers alike c
 
 **Nothing is hardcoded.** The first time you use it, meegle-buddy looks at *your* spaces and *your* fields and remembers them. So it works for any team's setup, not just one.
 
+> Version history is in [CHANGELOG.md](CHANGELOG.md).
+
 ---
 
 ## 🟢 Start here — which kind of user are you?

@@ -56,19 +56,22 @@ If a value is rejected, read a card that already has an estimate (`meegle workit
 
 ## Step 4 — per-node schedule (only if `node_schedule` is true)
 
-If work runs across workflow nodes (e.g. coding node, testing node) and the user wants each scheduled, set schedule and owners in **separate calls** (`workflow update-node` cannot change both categories at once). `--node-id` is the node's **state_key**.
+If work runs across workflow nodes (e.g. coding node, testing node) and the user wants each scheduled, set the schedule per node. `--node-id` is the node's **state_key**.
+
+🚫 **DO NOT pass `--node-schedule '<json>'` (or `-P`/`--params` JSON)** — the CLI marshals it as a string and errors `need STRUCT type, but got: STRING`. ✅ **Use `--set` with dot-path** instead. `owners` MUST use array-index `owners[0]=` (plain `owners=<key>` errors `unsupported type:float64, expected type:LIST`). The owner inherited from the assignee role is reused, so `owners[0]` in this same call covers it — no separate owner call needed. `points` accepts floats (e.g. 0.5).
 
 ```bash
-# schedule + points for a node
 meegle workflow update-node --work-item-id <ID> --node-id <STATE_KEY> --project-key <PK> \
-  --node-schedule '{"estimate_start_date":<ms>,"estimate_end_date":<ms>,"owners":["<USER_KEY>"],"points":<days>}'
-
-# owner for that node (separate call)
-meegle workflow update-node --work-item-id <ID> --node-id <STATE_KEY> --project-key <PK> \
-  --node-owners '["<USER_KEY>"]'
+  --set node_schedule.estimate_start_date=<ms> \
+  --set node_schedule.estimate_end_date=<ms> \
+  --set node_schedule.points=<days> \
+  --set 'node_schedule.owners[0]=<USER_KEY>'
 ```
+Returns `"success"`. (Confirmed working 2026-06-01; the old `--node-schedule` JSON form does not.)
 
 Lay node timelines sequentially (one node after the previous) unless the user says otherwise. Do not split or pad time using any complexity rule — just use the durations the user gave. For per-person schedules use `--schedules`. If a shape is rejected, read an item that already has node schedules (`workflow get-node`) and mirror it.
+
+> ⚠️ If the card type has an **auto-calculated** estimate/complexity field (e.g. a rollup on a parent, or a computed Complexity), do NOT try to write it — `workitem update` errors `计算字段值不可编辑` / `无权编辑`. Set the driving inputs (node points / child cards) and let it compute.
 
 ## Step 5 — confirm
 

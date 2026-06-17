@@ -22,7 +22,7 @@ meegle user me --format json     # read user_key into config.user_key
 
 Ask which Meegle space(s) the user works in. **Prefer the slug from the URL** — it's the most reliable:
 
-> "ปกติทำงานใน space ไหนของ Meegle ครับ? วิธีที่ชัวร์สุดคือก๊อป **slug จาก URL** มา (เช่น `9pxv57` — อยู่ใน address bar ตอนเปิด space นั้น) หรือจะบอกชื่อเต็มก็ได้ (มีหลายอันก็ได้)"
+> "ปกติทำงานใน space ไหนของ Meegle ครับ? วิธีที่ชัวร์สุดคือก๊อป **slug จาก URL** มา (เช่น `ab12cd` — โค้ดสั้นๆ ใน address bar ตอนเปิด space นั้น) หรือจะบอกชื่อเต็มก็ได้ (มีหลายอันก็ได้)"
 
 > ⚠️ **`project search` matches the space name EXACTLY — not fuzzy/partial.** A partial name ("Product") or a slightly-off spelling returns **empty** (`projects: []`). Only the exact full name works. The **slug never has this problem** — steer the user to the slug, and treat any name they give as a best-effort guess that may miss.
 
@@ -87,7 +87,9 @@ meegle workflow meta-node-fields   --project-key <PK> --work-item-type <TYPE> --
 
 Build the type entry per [config-format.md](config-format.md):
 
-1. **Fields** — from `meta-create-fields` (`FieldConfList[]`), record every field with `is_required == 1` as `required:true`, plus obviously useful optional ones (component, link, owner). **`meta-create-fields.is_required` is the authoritative "required at create" flag — do NOT use `meta-fields`' required flag** (a field can show required there because it's required at a workflow node/transition, not at create). Store each field's type from `field_type_key` (this decides how `field_value` is built — see cli-reference.md) into the config's `value_type`. For **select** fields, capture `options: [{label, value}]` (value = option_id) from `meta-fields` (`list[]`). If options aren't in the output, learn them from an existing item (`meegle workitem get`/`query`) — never copy another team's codes; if you still can't, store without options and ask the user to type the value at run time.
+1. **Fields** — from `meta-create-fields` (`FieldConfList[]`), record **every** field with `is_required == 1` as `required:true` — capture the FULL required set for each type, not a subset — plus obviously useful optional ones (component, link, owner). **`meta-create-fields.is_required` is the authoritative "required at create" flag — do NOT use `meta-fields`' required flag** (a field can show required there because it's required at a workflow node/transition, not at create). Store each field's type from `field_type_key` (this decides how `field_value` is built — see cli-reference.md) into the config's `value_type`. For **select** fields, capture `options: [{label, value}]` (value = option_id) from `meta-fields` (`list[]`). If options aren't in the output, learn them from an existing item (`meegle workitem get`/`query`) — never copy another team's codes; if you still can't, store without options and ask the user to type the value at run time.
+
+   > **Why this matters:** the API `workitem create` does **not** enforce required fields — it will silently create a half-empty card missing its `*` fields (links, schedule, estimate, owner). The config's stored `required:true` set is the ONLY guardrail that catches this at create/LIGHT-check time. So capturing the complete required set per type here is the whole point of init — be thorough.
 2. **template** — every create needs a `template` field. Get the template id(s):
    `meegle workitem meta-fields --project-key <PK> --work-item-type <TYPE> --field-keys '["template"]' --page-num 1 --format json`. Store under `templates` (with `id`); mark a default. Put `"template"` first in `create_fields`.
 3. **create_fields** — ordered ask-list: `template`, then all required fields, then useful optional ones.

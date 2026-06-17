@@ -50,6 +50,7 @@ Figure out what the user wants and load the matching reference file. **Always ma
 |---|---|
 | Set up for the first time, add a project, or refresh fields | Follow [references/init.md](references/init.md) |
 | Open / create a card or work item | Follow [references/create-card.md](references/create-card.md) |
+| Attach a card under a specific story **node** (e.g. "ใต้ node X" on a node-driven parent) | Follow [references/node-binding.md](references/node-binding.md) |
 | Log time / ลงเวลา / ลง TR | Follow [references/timelog.md](references/timelog.md) |
 | Set estimate / effort / schedule on a card | Follow [references/schedule.md](references/schedule.md) |
 | Check / refresh fields ("เช็ค field", "sync meegle") | Run FULL mode in [references/check-fields.md](references/check-fields.md) |
