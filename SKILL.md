@@ -15,7 +15,7 @@ The skill **never hardcodes** project keys, work-item types, field keys, templat
 1. **Talk to the user in Thai.** All questions, confirmations, and summaries you show the user are in Thai (e.g. "เข้างานกี่โมงครับ?", "จะลงการ์ดในโปรเจคไหน?"). These internal instructions stay in English for reliability.
 2. **The hard thinking happens at init, not at run time.** Discovery and field-mapping are done once and saved. Day-to-day actions (open card / log time) should be mechanical: read config → ask the user plain questions → fill fields → submit. This keeps it cheap and reliable on small models.
 3. **Never invent field keys, type keys, project keys, template IDs, or node IDs.** Always read them from the saved config (`~/.claude/meegle-buddy/`). If something you need is not in the config, run discovery (see [init](references/init.md)) — do not guess.
-4. **Fill every required field.** Before any create/update, check the config's required list (from `meta-create-fields`) for that type and make sure each one has a value. If a required value is missing, ask the user. Never submit a partial card.
+4. **Fill every required field — including conditional ones.** Before any create/update, check the config's required list (from `meta-create-fields`) for that type and make sure each one has a value. Also apply the type's `conditional_rules`: some fields become required only when another field has a certain value (Meegle form linkage — **not exposed by the API**, discovered at sync; see [check-fields](references/check-fields.md)). If a required value is missing, ask the user. Never submit a partial card.
 5. **Confirm before writing.** Always show the user a plain-Thai summary of exactly what will be created/updated and wait for "ok / โอเค / ลงเลย" before calling any `meegle ... create|update|workflow update-node` command.
 6. **Compute timestamps with Python (Bangkok tz), never by hand.** See [timelog](references/timelog.md).
 7. **No complexity scoring.** This skill deliberately does NOT estimate complexity or auto-derive effort from it. For estimate/effort/schedule it simply asks the user for the numbers and converts units. See [schedule](references/schedule.md).
@@ -27,9 +27,17 @@ The skill **never hardcodes** project keys, work-item types, field keys, templat
 This skill drives the **`meegle`** CLI (NOT `lark-cli`) — the official Larksuite tool (`@lark-project/meegle`, https://github.com/larksuite/meegle-cli). Each person must have it installed and logged in. On the very first invocation, verify:
 
 ```bash
-command -v meegle                   # must exist  (install: npm install -g @lark-project/meegle)
+command -v meegle                   # must exist
 meegle auth status --format json    # must show "authenticated": true
 ```
+
+**Easiest setup (CLI ≥ 1.0.11):** one command does install/upgrade + host config + login (browser or device code) in a single wizard — tell the user (Thai) to run it in their own terminal:
+
+```bash
+npx @lark-project/meegle@latest install
+```
+
+(Manual fallback: `npm install -g @lark-project/meegle`, then the host + device-code login below.)
 
 If `meegle` is missing or not authenticated, stop and walk the user through setup (in Thai) — see the "Prerequisites" section of the [README](README.md). Do not try to do Meegle work until `auth status` succeeds.
 

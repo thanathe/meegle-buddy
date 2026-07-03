@@ -76,6 +76,16 @@ One file per space, named by `project_key`. Holds the discovered, curated profil
       ],
       "roles": [ { "key": "<role-key>", "name": "Owner" } ],
       "create_fields": ["template", "name", "<field-key>"],
+      "conditional_rules": [
+        {
+          "when_field": "<driver-field-key>",
+          "when_option": "<option-id>",
+          "when_label": "Option A",
+          "require": ["<field-key>", "<field-key>"],
+          "server_enforced": true,
+          "evidence": "fill-rate 100% (n=12) 2026-01-01 + user confirmed"
+        }
+      ],
       "schedule": {
         "estimate_schedule_field": "<field-key>",
         "estimate_field_kind": "schedule_range",
@@ -127,6 +137,7 @@ One file per space, named by `project_key`. Holds the discovered, curated profil
 - `create_fields` — the ordered ask-list for opening this card; **include `template`** and all required fields, then useful optional ones.
 - `roles` — role keys (owner/assignee) for `--role-operate` (from `meta-roles`).
 - `templates` — workflow templates, each with `nodes` (`id` is the node **state_key**, used by `workflow update-node`). Mark one `is_default`.
+- `conditional_rules` — value-dependent required fields the Meegle form enforces via **linkage** (e.g. "Category = Option A ⇒ some relation field required"). ⚠️ The API does **not** expose these — they are inferred from real cards / 必填 errors and confirmed by the user during FULL sync (see the "conditional rules" step in [check-fields.md](check-fields.md)). Each rule: when `when_field` has option `when_option`, every key in `require[]` must be filled at create. `server_enforced` = whether create actually errors without it (`true` / `false` = UI-only, fill anyway for data consistency / `"unknown"`). `when_label` + `evidence` are for humans — keep them current. Fields named in `require[]` must exist in `fields[]`.
 - `schedule` — estimate/effort/schedule mapping (see schedule.md). `estimate_field_kind` notes whether the estimate is a single `schedule` field (`schedule_range`) or two separate start/end fields (`two_fields`). Omit if the type has no estimation.
 - `timelog` — how to build a time record (see timelog.md). Only on the `timerecord` type. Store its own `template_id`.
 

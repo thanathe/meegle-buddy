@@ -2,6 +2,15 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [1.0.0] — 2026-07-03
+
+First complete release — discovery-driven setup, create-card, timelog, schedule, node-binding, field-drift sync (LIGHT/FULL), and conditional linkage rules all in place.
+
+### Added
+- **Prerequisites** (SKILL): document the one-stop setup wizard `npx @lark-project/meegle@latest install` (CLI ≥ 1.0.11) — install/upgrade + host config + login in one command; manual install + device-code flow kept as fallback.
+- **cli-reference self-heal**: `TOOL_DISCOVERY_FAILED` row (CLI ≥ 1.0.7 keeps local commands bootable when server discovery fails) and a tip to re-run with `--envelope` (CLI ≥ 1.0.8) to get `meta.logid` for Meegle support.
+- **conditional_rules** (config-format + check-fields + create-card + SKILL): first-class support for Meegle **form linkage** — fields that become required only when another field has a certain value (e.g. "Category = Option A ⇒ a relation field becomes required"). No CLI/API endpoint exposes these rules (`meta-create-fields` returns only statically-required fields), so FULL sync gains a discovery step: MQL fill-rate inference per driver option (≥80% filled under one option, ≈0% elsewhere ⇒ proposed rule), confirmed by the user, saved as `conditional_rules` on the type. create-card applies matching rules when the user picks a select value, and a `必填`-on-"optional"-field create error is now recorded as a conditional rule (keyed to the driver value in effect) instead of flipping the field to globally required.
+
 ## [0.1.11] — 2026-06-16
 ### Added
 - **timelog / cli-reference**: a "VERIFY the link stuck" step, because a `work_item_related_select` link **fails silently on the wrong target type** — give it a wid whose work-item type isn't in the field's `related_work_item_info` (e.g. a parent/grouping item instead of the child it actually wants) and the API returns success-with-no-error (`{"mcp_result":""}`) but stores `null`. After setting any relation link, read it back via MQL (`workitem get` brief omits relation fields); a new self-heal row covers the "set OK but reads null" case. Also: if MQL shows the link set but the card UI says "Empty", that's a **stale UI cache** → hard-refresh. Kept fully discovery-based — the accepted type comes from each field's `related_work_item_info`, nothing hardcoded.

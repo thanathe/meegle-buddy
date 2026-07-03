@@ -200,8 +200,11 @@ Returns `"success"`. The owner inherited from the assignee role is reused via `o
 | `invalid select option` | use a valid option_id from `meta-fields`; if ambiguous, ask the user |
 | `creating ... missing template` | add `{"field_key":"template","field_value":"<id>"}` |
 | `node not found` | get the real node state_key via `workflow get-node` — don't guess |
+| `TOOL_DISCOVERY_FAILED` (dynamic commands) | server-side tool discovery failed (network/backend) — local commands (`auth`, `config`, `inspect`) still work; retry with `--refresh`, or later |
 | auth error | tell the user (Thai) to `meegle auth login`, then retry |
 | role update via fields rejected | use `--role-operate`, not `--fields` |
 | empty / `KeyError` when parsing | you read the wrong envelope key — check the table above (`list` vs `FieldConfList` vs `projects`) |
 
 Auto-retry at most twice after a targeted fix; then stop and explain to the user.
+
+> **Unexplained server error?** Re-run the same command with `--envelope` (CLI ≥ 1.0.8) and read `meta.logid` — a backend trace id the user can hand to Meegle support/oncall.
