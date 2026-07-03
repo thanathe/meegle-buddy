@@ -2,6 +2,10 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [1.0.2] — 2026-07-03
+### Added
+- **install.sh** — pretty one-liner installer (`curl -fsSL …/install.sh | bash`): banner + 3-step wizard that installs the skill via the `skills` CLI (global, all agents), then checks the `meegle` CLI and login state and prints the exact follow-up command (`npx @lark-project/meegle@latest install` / device-code login) when something is missing. `--dry-run` supported; README gains a TL;DR install section.
+
 ## [1.0.1] — 2026-07-03
 ### Fixed
 - **SKILL.md frontmatter**: quote the `description` value — the unquoted text contained `Keywords: ` (colon + space), which strict YAML parsers read as a nested mapping. Claude Code's lenient loader accepted it, but the `skills` CLI (`npx skills add <owner>/<repo>`) reported "No valid skills found". The repo is now installable via `npx skills@latest add thanathe/meegle-buddy`.

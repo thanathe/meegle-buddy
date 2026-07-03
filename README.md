@@ -8,6 +8,14 @@ It's built to be shared with a whole team. Developers and non-developers alike c
 
 > Version history is in [CHANGELOG.md](CHANGELOG.md).
 
+## ⚡ TL;DR install (one line)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/thanathe/meegle-buddy/main/install.sh | bash
+```
+
+A friendly wizard installs the skill (via the [`skills`](https://github.com/vercel-labs/skills) CLI, works with Claude Code and other agents), then checks the `meegle` CLI + login and tells you the exact next command if anything is missing. Prefer the raw command? `npx skills@latest add thanathe/meegle-buddy` does the skill part only.
+
 ---
 
 ## 🟢 Start here — which kind of user are you?
