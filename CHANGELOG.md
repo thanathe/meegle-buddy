@@ -2,6 +2,10 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [1.0.5] — 2026-07-03
+### Changed
+- **install.sh banner**: back to the v1.0.3 fluffy face (better likeness) with **floppy ears added** — the v1.0.4 whiskers/beard were dropped.
+
 ## [1.0.4] — 2026-07-03
 ### Changed
 - **install.sh banner**: the mascot is a proper **Schnauzer** now — bushy eyebrows, folded ears, side whiskers, and a beard (dim-tinted), tongue still out.
