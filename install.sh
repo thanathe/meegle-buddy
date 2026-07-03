@@ -11,8 +11,9 @@ DRY_RUN=false
 if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
   B=$'\033[1m'; DIM=$'\033[2m'; R=$'\033[0m'
   CY=$'\033[38;5;51m'; MG=$'\033[38;5;213m'; GR=$'\033[38;5;114m'; YL=$'\033[38;5;222m'; RD=$'\033[38;5;203m'
+  WH=$'\033[38;5;255m'; PK=$'\033[38;5;211m'
 else
-  B=""; DIM=""; R=""; CY=""; MG=""; GR=""; YL=""; RD=""
+  B=""; DIM=""; R=""; CY=""; MG=""; GR=""; YL=""; RD=""; WH=""; PK=""
 fi
 
 step()  { printf '%s\n' "${CY}◆${R} ${B}$1${R}"; }
@@ -23,9 +24,15 @@ runcmd(){ if $DRY_RUN; then printf '%s\n' "${DIM}  (dry-run) $*${R}"; else "$@";
 
 # ── banner ────────────────────────────────────────────────────────────────────
 printf '\n'
+printf '%s\n' "${WH}${B}             .-~~~~~~~-.${R}"
+printf '%s\n' "${WH}${B}           (( (  ${R}●  ●${WH}${B}  ) ))${R}"
+printf '%s\n' "${WH}${B}          (( ((    ${R}▼${WH}${B}   )) ))${R}"
+printf '%s\n' "${WH}${B}           (( (  \`-'-´ ) ))${R}"
+printf '%s\n' "${WH}${B}             \`~-.(${R} ${PK}U${R} ${WH}${B}).-~´${R}"
+printf '%s\n' "                  ${PK}\`U´${R}"
 printf '%s\n' "${MG}   ╭──────────────────────────────────────────────╮${R}"
 printf '%s\n' "${MG}   │${R}                                              ${MG}│${R}"
-printf '%s\n' "${MG}   │${R}   ${B}🐣  m e e g l e - b u d d y${R}                ${MG}│${R}"
+printf '%s\n' "${MG}   │${R}   ${B}🐶  m e e g l e - b u d d y${R}                ${MG}│${R}"
 printf '%s\n' "${MG}   │${R}   ${DIM}your friendly Meegle sidekick${R}              ${MG}│${R}"
 printf '%s\n' "${MG}   │${R}                                              ${MG}│${R}"
 printf '%s\n' "${MG}   │${R}   ${DIM}cards · timelog · schedule — no field${R}      ${MG}│${R}"

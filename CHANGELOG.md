@@ -2,6 +2,10 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [1.0.3] — 2026-07-03
+### Changed
+- **install.sh banner**: ASCII-art mascot — a fluffy floppy-eared dog with its tongue out (pink-tinted) above the box; title emoji 🐣 → 🐶.
+
 ## [1.0.2] — 2026-07-03
 ### Added
 - **install.sh** — pretty one-liner installer (`curl -fsSL …/install.sh | bash`): banner + 3-step wizard that installs the skill via the `skills` CLI (global, all agents), then checks the `meegle` CLI and login state and prints the exact follow-up command (`npx @lark-project/meegle@latest install` / device-code login) when something is missing. `--dry-run` supported; README gains a TL;DR install section.
