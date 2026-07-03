@@ -2,6 +2,10 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [1.0.1] — 2026-07-03
+### Fixed
+- **SKILL.md frontmatter**: quote the `description` value — the unquoted text contained `Keywords: ` (colon + space), which strict YAML parsers read as a nested mapping. Claude Code's lenient loader accepted it, but the `skills` CLI (`npx skills add <owner>/<repo>`) reported "No valid skills found". The repo is now installable via `npx skills@latest add thanathe/meegle-buddy`.
+
 ## [1.0.0] — 2026-07-03
 
 First complete release — discovery-driven setup, create-card, timelog, schedule, node-binding, field-drift sync (LIGHT/FULL), and conditional linkage rules all in place.

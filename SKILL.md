@@ -1,6 +1,6 @@
 ---
 name: meegle-buddy
-description: Friendly guided helper for Feishu/Lark Project (Meegle / Meego) that works for EVERYONE on the team, not just devs. No hardcoded field IDs — it discovers each person's spaces, work-item types, workflows, and field maps on first run and saves a personal config, then helps open cards, log time, and set estimate/effort/schedule with every required field filled in correctly. Use when the user wants to set up Meegle, open/create a card or work item, log time / ลงเวลา / ลง TR, or set estimate/schedule, and is NOT relying on a hardcoded team-specific skill. Keywords: meegle, meego, feishu project, lark project, ลงเวลา, ลง time, เปิดการ์ด, สร้างงาน, timelog, work item, estimate, schedule, sync meegle, เช็ค field, refresh fields.
+description: "Friendly guided helper for Feishu/Lark Project (Meegle / Meego) that works for EVERYONE on the team, not just devs. No hardcoded field IDs — it discovers each person's spaces, work-item types, workflows, and field maps on first run and saves a personal config, then helps open cards, log time, and set estimate/effort/schedule with every required field filled in correctly. Use when the user wants to set up Meegle, open/create a card or work item, log time / ลงเวลา / ลง TR, or set estimate/schedule, and is NOT relying on a hardcoded team-specific skill. Keywords: meegle, meego, feishu project, lark project, ลงเวลา, ลง time, เปิดการ์ด, สร้างงาน, timelog, work item, estimate, schedule, sync meegle, เช็ค field, refresh fields."
 allowed-tools: Bash, Read, Write, Edit, AskUserQuestion
 ---
 
