@@ -2,6 +2,10 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [1.0.4] — 2026-07-03
+### Changed
+- **install.sh banner**: the mascot is a proper **Schnauzer** now — bushy eyebrows, folded ears, side whiskers, and a beard (dim-tinted), tongue still out.
+
 ## [1.0.3] — 2026-07-03
 ### Changed
 - **install.sh banner**: ASCII-art mascot — a fluffy floppy-eared dog with its tongue out (pink-tinted) above the box; title emoji 🐣 → 🐶.
