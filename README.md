@@ -217,6 +217,15 @@ The `meegle` CLI this skill drives is an **official open-source tool by Larksuit
 
 ---
 
+## Contributing
+
+Issues and PRs welcome — a field type it doesn't handle, a workflow it gets wrong, or a step
+in the install guide that lost you. When reporting, say which kind of work item and what you
+asked for. **Don't paste your config or `meegle` auth output as-is** — it holds your user key
+and space IDs; redact them first.
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE). Free to use and share.
