@@ -2,6 +2,36 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [1.1.0] — 2026-10-09
+### Added
+- **`to-meegle-spec`** skill — turns a conversation into a spec file, then (only after the user
+  says yes) opens a parent card that links to it. Never uses GitHub, never commits.
+- **`to-meegle-tickets`** skill — breaks a spec into thin end-to-end task cards under that parent,
+  writes the plan to a file first, and creates the cards after one confirmation. Blocked-by is text.
+- Both read everything from the meegle-buddy config — nothing is hardcoded. A small helper,
+  `scripts/meegle_config.py`, prints a short summary of a card type so small models (Qwen, GLM,
+  DeepSeek) don't have to read the raw JSON. The first run asks which type holds specs and which
+  holds tasks, and saves it to `~/.claude/meegle-buddy/spec-flow.json`.
+- **Principle 10** in `SKILL.md`: prove the write path before guessing a parameter shape twice.
+
+### Changed
+- **Repo layout:** every skill now lives under `skills/` (`skills/meegle-buddy`,
+  `skills/to-meegle-spec`, `skills/to-meegle-tickets`), so one `npx skills add … --skill '*'`
+  installs all three. `install.sh` passes `--skill '*'`. **Existing installs:** reinstall once —
+  the old root `SKILL.md` path is gone.
+- README install steps use `npx skills` instead of `git clone` into a single folder.
+
+### Fixed
+- **Roles at create** (`create-card.md`, `cli-reference.md`): send them as a field named
+  `role_owners` whose value is a stringified array of `{role, owners}`. The old advice — a field
+  named `role_<project>_<type>_owner` — is rejected with "field keys not found".
+- **Reassigning roles** with `--role-operate`: the people key is `user_keys`; `owners` is silently
+  ignored.
+- Self-heal table gains `need STRUCT type, but got: STRING` on create (send through `-P`),
+  `ErrFieldRequired` (lists every missing field at once), `field keys not found`, and the empty
+  `{"mcp_result": ""}` response (normal either way — re-read).
+- Reading a card back: fields are `work_item_fields[].key` / `.value`, roles are `role_members[]`.
+
 ## [1.0.5] — 2026-07-03
 ### Changed
 - **install.sh banner**: back to the v1.0.3 fluffy face (better likeness) with **floppy ears added** — the v1.0.4 whiskers/beard were dropped.

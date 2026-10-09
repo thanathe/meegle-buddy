@@ -1,0 +1,5 @@
+interface:
+  display_name: "To Meegle Tickets"
+  short_description: "Break a spec into task cards: breakdown file first, Meegle cards once you confirm"
+policy:
+  allow_implicit_invocation: true
