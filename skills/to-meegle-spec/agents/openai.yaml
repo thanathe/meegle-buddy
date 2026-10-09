@@ -1,0 +1,5 @@
+interface:
+  display_name: "To Meegle Spec"
+  short_description: "Turn a conversation into a spec file, then a Meegle card once you confirm"
+policy:
+  allow_implicit_invocation: true

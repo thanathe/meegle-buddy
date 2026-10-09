@@ -60,7 +60,9 @@ Capture the new work-item id from the JSON output.
   meegle workitem update --work-item-id <NEW_ID> --project-key <PK> \
     --role-operate '[{"op":"add","role_key":"<ROLE_KEY>","user_keys":["<USER_KEY>"]}]' --format json
   ```
-  ⚠️ **Some spaces make the owner role REQUIRED at create** — then a plain create errors with the role name "必填" (required). In that case pass the owner **in the create `--fields` itself**, as a field whose key is the fully-qualified role field `role_<project_key>_<work_item_type_key>_owner` and whose `field_value` is the **single user_key as a string** (not an array). Discover whether this applies from `meta-create-fields` (the role may be listed) or by reacting to the "必填" error; record it on the type's config so it's done up-front next time. `--role-operate` and the `role_owners` param are **ignored** by `create` in these spaces — it must be a field.
+  The people key is `user_keys` — `owners` is silently ignored.
+
+  ⚠️ **Some types make roles REQUIRED at create** — a plain create then errors naming the role as "必填" (required). In that case put the roles **in the create itself**, as a field named **`role_owners`** whose `field_value` is a **stringified** array of `{role, owners}` — see "Roles that are required at create" in [cli-reference.md](cli-reference.md). `--role-operate` is ignored by `create`, and a field named `role_<project_key>_<type_key>_owner` is rejected ("field keys not found"). Record the recipe on the type's config (`create_roles`) so it is done up-front next time.
 - **Link / relation fields** (`workitem_related_*`) — these can fail **at create** with `字段「…」当前选项值已失效` even when the target id is valid. If so, create the card WITHOUT the link, then set it via a follow-up `workitem update --fields` (value = the target work-item id as a string).
 - Any field the create response shows empty but you intended to set — re-send via `workitem update`.
 - **Show under a specific story node** — if the parent is a node-driven workflow and the user wants the card under a particular node (not just the parent's rollup list), the link field is not enough. Follow [node-binding.md](node-binding.md) (the CLI can't set the node-edge; it's a web-UI/endpoint step).
@@ -73,12 +75,12 @@ meegle workitem get --work-item-id <NEW_ID> --project-key <PK> \
   --fields "<each field you set>" --format json
 # + workflow get-node ... if you set node schedules
 ```
-Tick every field you meant to set — everything in the config's `create_fields`, plus the follow-ups you intended (role owner, relation/link fields, node schedules, estimate/effort). A half-filled card (links/schedule/estimate silently missing) is the most common failure; this read-back catches it.
+In the response, fields are in `work_item_fields[]` as **`key` / `value`** (not `field_key` / `field_value`), and roles are in `role_members[]`. Tick every field you meant to set — everything in the config's `create_fields`, plus the follow-ups you intended (role owner, relation/link fields, node schedules, estimate/effort). A half-filled card (links/schedule/estimate silently missing) is the most common failure; this read-back catches it.
 
 Report the new card's id/link in Thai. For estimate/schedule, continue with [schedule](schedule.md). To log time against it, see [timelog](timelog.md).
 
 ## If create fails on a required field
 
-The error usually names the missing/invalid field (or a STRING-protocol issue). Map it to the config field, fix the value (stringify if needed — see cli-reference self-heal table), ask the user if a value is missing, and retry. If a field that should be required wasn't in `create_fields`, add it to the config so it's asked next time.
+The error usually names the missing/invalid field (or a STRING-protocol issue). An `ErrFieldRequired` error lists **every** still-missing field at once, so one failed create tells you the whole set — read the keys from it instead of guessing. Map them to the config fields, fix the values (stringify if needed — see cli-reference self-heal table), ask the user for anything missing, and retry. If a field that should be required wasn't in `create_fields`, add it to the config so it's asked next time.
 
 ⚠️ **必填 (required) error on a field that `meta-create-fields` says is optional** → that's a **conditional linkage rule** the API doesn't expose, keyed to some select value you sent (usually a category-like field). After fixing this create, save/extend a `conditional_rules` entry on the type — `when_field`/`when_option` = the driver value that was in effect, `require` += the field that errored, `server_enforced: true` — so next time it's asked up-front. Do NOT flip the field to globally `required: true`; that forces it on cards where it doesn't apply.

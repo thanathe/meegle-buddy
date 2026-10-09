@@ -67,7 +67,7 @@ meegle workflow update-node --work-item-id <ID> --node-id <STATE_KEY> --project-
   --set node_schedule.points=<days> \
   --set 'node_schedule.owners[0]=<USER_KEY>'
 ```
-Returns `"success"`. (Confirmed working 2026-06-01; the old `--node-schedule` JSON form does not.)
+Returns `"success"`. The old `--node-schedule` JSON form does not work.
 
 Lay node timelines sequentially (one node after the previous) unless the user says otherwise. Do not split or pad time using any complexity rule — just use the durations the user gave. For per-person schedules use `--schedules`. If a shape is rejected, read an item that already has node schedules (`workflow get-node`) and mirror it.
 

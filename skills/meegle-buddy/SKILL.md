@@ -21,6 +21,7 @@ The skill **never hardcodes** project keys, work-item types, field keys, templat
 7. **No complexity scoring.** This skill deliberately does NOT estimate complexity or auto-derive effort from it. For estimate/effort/schedule it simply asks the user for the numbers and converts units. See [schedule](references/schedule.md).
 8. **`field_value` is ALWAYS a string.** Every command is `meegle ... --format json` (NOT `lark-cli`). Field values go in repeated `--fields '{"field_key":"...","field_value":"..."}'` flags, and the value is always a *string* — arrays/objects must be JSON-stringified. This is the #1 cause of "logged wrong / rejected". See [cli-reference](references/cli-reference.md).
 9. **The team changes fields often — guard against drift, but stay fast.** Two modes (see [check-fields](references/check-fields.md)): **LIGHT** runs automatically before every write — one `meta-create-fields` call, cached once per type per conversation — and only stops you when a field just became **required**. **FULL** runs when the user asks ("เช็ค field" / "sync meegle") and lists *all* new / changed / removed fields to curate. Never silently ignore a required field; never silently auto-add anything — ask the user, then update the config. Don't run FULL on every action (it's slow).
+10. **Prove the write path before guessing a parameter shape twice.** A response with no data (`{"mcp_result": ""}`) is not evidence either way — only a re-read is. One shape guess is allowed. If it fails, stop tuning: prove the path with a write whose outcome you already know (change an ordinary field on a card you own, then `workitem get` it back). If that works, the shape is wrong and the reference files almost certainly hold the right one — read them. If the path itself writes nothing, no shape will ever work: tell the user and use the web UI.
 
 ## Prerequisites (check on first run)
 
@@ -39,7 +40,7 @@ npx @lark-project/meegle@latest install
 
 (Manual fallback: `npm install -g @lark-project/meegle`, then the host + device-code login below.)
 
-If `meegle` is missing or not authenticated, stop and walk the user through setup (in Thai) — see the "Prerequisites" section of the [README](README.md). Do not try to do Meegle work until `auth status` succeeds.
+If `meegle` is missing or not authenticated, stop and walk the user through setup (in Thai) — see the "Prerequisites" section of the [README](https://github.com/thanathe/meegle-buddy#readme). Do not try to do Meegle work until `auth status` succeeds.
 
 **Login guidance (important):** when guiding login, always use the **device-code** flow, NOT plain `meegle auth login`. The plain flow relies on auto-opening a browser + a localhost callback, which hangs or fails unpredictably inside agent shells (Claude Code), SSH, and some terminals. Tell the user (Thai) to run:
 
@@ -63,6 +64,8 @@ Figure out what the user wants and load the matching reference file. **Always ma
 | Set estimate / effort / schedule on a card | Follow [references/schedule.md](references/schedule.md) |
 | Check / refresh fields ("เช็ค field", "sync meegle") | Run FULL mode in [references/check-fields.md](references/check-fields.md) |
 | (any of the above) needs a raw meegle command | See [references/cli-reference.md](references/cli-reference.md) |
+| Write a spec / PRD and open its parent card | Use the **`to-meegle-spec`** skill (same package) |
+| Break a spec into task cards | Use the **`to-meegle-tickets`** skill (same package) |
 
 ### Is the user set up yet?
 
@@ -82,6 +85,7 @@ Personal, per-machine, **never committed to git**:
 ```
 ~/.claude/meegle-buddy/
 ├── config.json                 # spaces the user picked, defaults (work start time, user_key)
+├── spec-flow.json              # written by to-meegle-spec / to-meegle-tickets: which type is a spec, which is a task
 └── projects/
     └── <project_key>.json      # discovered work-item types, fields, workflow nodes, mappings
 ```

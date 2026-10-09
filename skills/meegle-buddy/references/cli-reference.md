@@ -143,6 +143,9 @@ meegle workitem create \
 - **`template` is a field and is required on create** — there is no `--template-id` flag.
 - Include **every** field from `meta-create-fields` with `is_required == 1` — that's the complete create checklist for your work-item type.
 - Capture the new work-item id from the JSON output.
+- If create fails with `need STRUCT type, but got: STRING` (a thrift marshal error), send the same
+  array through `-P` instead: `-P '{"fields":[{"field_key":"name","field_value":"<title>"}, …]}'`.
+  Which form works has changed between CLI versions; try `--fields` first.
 
 ### Update an existing item
 
@@ -167,7 +170,27 @@ meegle workitem update \
 ```
 
 `<ROLE_KEY>` from `meta-roles`; `<USER_KEY>` from `meegle user me` (yourself) or `meegle user search` (someone else). Never guess user keys.
-(On *create*, an owner can instead be set via the `role_owners` field, stringified: `{"field_key":"role_owners","field_value":"[{\"role\":\"<role_id>\",\"owners\":[\"<USER_KEY>\"]}]"}` — but the follow-up `--role-operate` update is simpler and reliable.)
+
+- The people key inside each operation is **`user_keys`**. `owners` is silently ignored — the call
+  still answers `{"mcp_result": ""}` and nothing changes.
+- `op` accepts only `add` / `remove`. To replace someone, send one `add` and one `remove`.
+- `{"mcp_result": ""}` comes back whether the write landed or not. Re-read the card and check
+  `role_members[]`.
+
+#### Roles that are required at create
+
+Some types refuse a create until a role (owner, approver, PM …) is filled. `--role-operate` is
+ignored by `create`, so send the roles as a **field named `role_owners`** whose value is a
+**stringified** array of `{role, owners}`:
+
+```bash
+--fields '{"field_key":"role_owners","field_value":"[{\"role\":\"owner\",\"owners\":[\"<USER_KEY>\"]},{\"role\":\"approver\",\"owners\":[\"<USER_KEY_2>\"]}]"}'
+```
+
+These do **not** work at create: a field named `role_<project_key>_<type_key>_<role>` ("field keys
+not found"), an object-shaped value such as `{"owner":[...]}` (accepted, roles stay empty), or
+`--params role_owners` (dropped as an unknown argument). Record the working recipe on the type in
+the config (`create_roles`) so it is done up-front next time.
 
 ### Per-node schedule (estimate dates + owner on a workflow node)
 
@@ -182,7 +205,7 @@ meegle workflow update-node \
   --set node_schedule.points=<days> \
   --set 'node_schedule.owners[0]=<USER_KEY>'
 ```
-Returns `"success"`. The owner inherited from the assignee role is reused via `owners[0]` — no separate `--node-owners` call needed. (Confirmed working 2026-06-01.)
+Returns `"success"`. The owner inherited from the assignee role is reused via `owners[0]` — no separate `--node-owners` call needed.
 
 > For per-person schedules use `--schedules` (array, one entry per person). If a shape is rejected, read an item that already has node schedules (`workflow get-node`) and mirror it.
 
@@ -203,6 +226,10 @@ Returns `"success"`. The owner inherited from the assignee role is reused via `o
 | `TOOL_DISCOVERY_FAILED` (dynamic commands) | server-side tool discovery failed (network/backend) — local commands (`auth`, `config`, `inspect`) still work; retry with `--refresh`, or later |
 | auth error | tell the user (Thai) to `meegle auth login`, then retry |
 | role update via fields rejected | use `--role-operate`, not `--fields` |
+| `need STRUCT type, but got: STRING` (on `create`) | send the same fields through `-P '{"fields":[…]}'` |
+| `ErrFieldRequired` / `必填` | the message lists **every** still-missing field at once — read the keys from it, ask the user for the values, retry once. If `meta-create-fields` called the field optional, it is a conditional rule: record it (`check-fields.md`) |
+| `field keys not found: <key>` | the type does not have that field — remove it from the payload. Do not keep retrying with it |
+| `{"mcp_result": ""}` | this is the **normal** response for create/update, success or not — re-read the card to know |
 | empty / `KeyError` when parsing | you read the wrong envelope key — check the table above (`list` vs `FieldConfList` vs `projects`) |
 
 Auto-retry at most twice after a targeted fix; then stop and explain to the user.

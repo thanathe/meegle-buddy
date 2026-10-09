@@ -51,9 +51,9 @@ else
 fi
 
 # ── 2/3 install the skill ────────────────────────────────────────────────────
-step "2/3  Installing the meegle-buddy skill (global, all agents)"
-runcmd npx -y skills@latest add thanathe/meegle-buddy -g -y
-ok "skill installed — your agent now knows Meegle"
+step "2/3  Installing the skills: meegle-buddy, to-meegle-spec, to-meegle-tickets (global, all agents)"
+runcmd npx -y skills@latest add thanathe/meegle-buddy -g -y --skill '*'
+ok "skills installed — your agent now knows Meegle"
 
 # ── 3/3 meegle CLI ───────────────────────────────────────────────────────────
 step "3/3  Checking the meegle CLI"
@@ -72,6 +72,6 @@ fi
 # ── done ─────────────────────────────────────────────────────────────────────
 printf '\n'
 printf '%s\n' "${GR}${B}  พร้อมใช้แล้วครับ! 🎉${R}"
-printf '%s\n' "  ${DIM}ลองพิมพ์กับ agent ของคุณ:${R}  ${B}\"ลงเวลาวันนี้หน่อย\"${R}  ${DIM}หรือ${R}  ${B}\"เปิดการ์ดใหม่\"${R}"
+printf '%s\n' "  ${DIM}ลองพิมพ์กับ agent ของคุณ:${R}  ${B}\"ลงเวลาวันนี้หน่อย\"${R}  ${DIM}หรือ${R}  ${B}\"เปิดการ์ดใหม่\"${R}  ${DIM}หรือ${R}  ${B}\"เขียน spec\"${R}"
 printf '%s\n' "  ${DIM}ครั้งแรก skill จะพาสำรวจ space ของคุณเองอัตโนมัติ (init)${R}"
 printf '\n'

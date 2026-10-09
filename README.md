@@ -4,6 +4,16 @@ A friendly Claude **skill** that helps anyone log time and open cards in **Feish
 
 It's built to be shared with a whole team. Developers and non-developers alike can just say *"log my time today"* or *"open a card"* in plain language, and the skill asks simple questions and fills in everything correctly.
 
+The package holds three skills:
+
+| Skill | What it does |
+|---|---|
+| **`meegle-buddy`** | Setup, open cards, log time, estimates — the core |
+| **`to-meegle-spec`** | Turns a conversation into a spec file, then (if you say yes) a parent card that links to it |
+| **`to-meegle-tickets`** | Breaks a spec into task cards under that parent, each saying what blocks it |
+
+The two spec skills never touch GitHub and never commit for you. They use the config `meegle-buddy` builds, so set that up first.
+
 **Nothing is hardcoded.** The first time you use it, meegle-buddy looks at *your* spaces and *your* fields and remembers them. So it works for any team's setup, not just one.
 
 > Version history is in [CHANGELOG.md](CHANGELOG.md).
@@ -14,7 +24,11 @@ It's built to be shared with a whole team. Developers and non-developers alike c
 curl -fsSL https://raw.githubusercontent.com/thanathe/meegle-buddy/main/install.sh | bash
 ```
 
-A friendly wizard installs the skill (via the [`skills`](https://github.com/vercel-labs/skills) CLI, works with Claude Code and other agents), then checks the `meegle` CLI + login and tells you the exact next command if anything is missing. Prefer the raw command? `npx skills@latest add thanathe/meegle-buddy` does the skill part only.
+A friendly wizard installs all three skills (via the [`skills`](https://github.com/vercel-labs/skills) CLI, works with Claude Code and other agents), then checks the `meegle` CLI + login and tells you the exact next command if anything is missing. Prefer the raw command? `npx skills@latest add thanathe/meegle-buddy -g --skill '*'` does the skill part only.
+
+> **Installed meegle-buddy before October 2026?** The skills moved into a `skills/` folder, so
+> `skills update` may not find the old path. Reinstall once with the line above (or the raw
+> command). Your personal config in `~/.claude/meegle-buddy/` is not touched.
 
 ---
 
@@ -87,23 +101,16 @@ This is the little program that actually talks to Feishu / Lark Project. You ins
 
 ### Step 3 — Install the skill
 
-This copies meegle-buddy into the folder where Claude Code looks for skills.
-
-**Mac / Linux** — paste this whole block into the Terminal and press Enter:
+This copies the three skills into the folders where Claude Code (and other agents) look for skills.
+Paste this into the Terminal and press Enter — it is the same on Mac, Linux and Windows:
 
 ```bash
-mkdir -p ~/.claude/skills
-git clone <this-repo-url> ~/.claude/skills/meegle-buddy
+npx skills@latest add thanathe/meegle-buddy -g --skill '*'
 ```
 
-**Windows (PowerShell):**
-
-```powershell
-mkdir "$HOME\.claude\skills" -Force
-git clone <this-repo-url> "$HOME\.claude\skills\meegle-buddy"
-```
-
-> Replace `<this-repo-url>` with the address of this repository (whoever shared it with you has the link). No `git`? On the repo page click the green **"Code" → "Download ZIP"**, unzip it, and move the folder so it sits at `~/.claude/skills/meegle-buddy` (Mac) or `%USERPROFILE%\.claude\skills\meegle-buddy` (Windows).
+> No `npx`? On the repo page click the green **"Code" → "Download ZIP"**, unzip it, and copy each
+> folder inside `skills/` (`meegle-buddy`, `to-meegle-spec`, `to-meegle-tickets`) into
+> `~/.claude/skills/` (Mac) or `%USERPROFILE%\.claude\skills\` (Windows).
 
 ### Step 4 — Use it 🎉
 
@@ -113,6 +120,8 @@ Open Claude Code (type `claude` in the Terminal, in any folder). Then just talk 
 - **Log your day:** **"ลงเวลาวันนี้"** (or *"log my time today"*). It asks when you started and what you did, then records it.
 - **Open a card:** **"เปิดการ์ด"** (or *"create a card"*).
 - **Set an estimate / schedule:** *"ตั้ง estimate ให้การ์ดนี้"*.
+- **Write a spec:** **"เขียน spec"** (or *"write a spec"*). It writes a markdown file, then asks whether to open a card for it.
+- **Break a spec into tasks:** **"แตก task"** (or *"break this into tickets"*). It writes the breakdown to a file, then creates the cards after you confirm.
 
 That's it. You never have to remember any field names or IDs — the skill asks you plain questions and fills the rest.
 
@@ -129,15 +138,15 @@ meegle auth login --device-code                # device-code avoids browser-call
 meegle auth status --format json               # expect "authenticated": true
 ```
 
-**Install the skill:**
+**Install the skills:**
 
 ```bash
-git clone <this-repo-url> ~/.claude/skills/meegle-buddy
+npx skills@latest add thanathe/meegle-buddy -g --skill '*'
 ```
 
-(just needs `SKILL.md` to land at `~/.claude/skills/meegle-buddy/SKILL.md`)
+(or copy each folder under `skills/` into `~/.claude/skills/`)
 
-**Use it** — say any of: `ตั้งค่า meegle` / `set up meegle`, `ลงเวลาวันนี้` / `log time`, `เปิดการ์ด` / `create a card`, `เช็ค field` / `sync meegle`.
+**Use it** — say any of: `ตั้งค่า meegle` / `set up meegle`, `ลงเวลาวันนี้` / `log time`, `เปิดการ์ด` / `create a card`, `เช็ค field` / `sync meegle`, `เขียน spec` / `write a spec`, `แตก task` / `break this into tickets`.
 
 ---
 
@@ -147,6 +156,8 @@ git clone <this-repo-url> ~/.claude/skills/meegle-buddy
 - **Open a card:** walks you through every required field for that work-item type, then creates it.
 - **Log time:** asks when you started and what you did, lays out your day (skipping lunch), and creates time records — each with a description and linked to a parent card.
 - **Estimate / effort / schedule:** takes the numbers you give and writes them to the right fields.
+- **Spec → parent card (`to-meegle-spec`):** writes the spec to a markdown file, then — only if you say yes — opens a parent card (Feature / Story / Requirement) that links to it.
+- **Spec → task cards (`to-meegle-tickets`):** splits a spec into thin end-to-end tasks, writes the plan to a file, and creates the cards under the parent after one confirmation.
 - **Keeps up with changing fields:** before each action it re-checks the live fields; if your team added a new field or made one required, it asks whether to include it — so it never goes stale while your setup is still changing.
 
 ## What it does **not** do
@@ -164,6 +175,7 @@ The skill saves what it discovers in your **home folder**, never in this repo:
 ```
 ~/.claude/meegle-buddy/
 ├── config.json              # your spaces + preferences (e.g. usual start time)
+├── spec-flow.json           # which card type holds specs and which holds tasks (spec skills)
 └── projects/
     └── <project_key>.json   # your discovered field map per space
 ```
@@ -180,7 +192,9 @@ Because it lives in your home folder, your field map stays **private to you** an
 | `meegle: command not found` | Install Node.js, then `npm install -g @lark-project/meegle`. |
 | **Login browser won't open / opens sometimes / login hangs** | Don't use plain `meegle auth login`. Run `meegle auth login --device-code` instead — it gives you a link to open yourself (no auto-browser, works in Claude Code / SSH / VS Code terminals). |
 | `"authenticated": false` or auth errors | Run `meegle auth login --device-code` again; make sure the host is right (`meegle config set host <host>`). |
-| The skill doesn't trigger | Make sure the folder is exactly at `~/.claude/skills/meegle-buddy/` with `SKILL.md` inside; restart Claude Code. |
+| The skill doesn't trigger | Make sure each folder sits directly in `~/.claude/skills/` (e.g. `~/.claude/skills/meegle-buddy/SKILL.md`); restart Claude Code. |
+| `skills update` can't find meegle-buddy | You installed before the move to `skills/`. Reinstall: `npx skills@latest add thanathe/meegle-buddy -g --skill '*'`. |
+| A spec or ticket request opened a GitHub issue | Another skill (e.g. `to-prd`, `to-issues`) caught the request. Say the skill name: `/to-meegle-spec` or `/to-meegle-tickets`. |
 | It can't find your space | Give it the **slug** from your Meegle URL (the short code), or paste the full URL. |
 | A create fails saying a field is required | Tell the skill the value — it will add that field to your checklist so it's asked next time. |
 
@@ -190,14 +204,18 @@ Because it lives in your home folder, your field map stays **private to you** an
 
 | File | Purpose |
 |---|---|
-| `SKILL.md` | Entry point + operating principles + routing |
-| `references/init.md` | Guided discovery → builds your personal config |
-| `references/create-card.md` | Open a work item with all required fields |
-| `references/timelog.md` | Log time records (timestamps + linking) |
-| `references/schedule.md` | Set estimate / effort / per-node schedule |
-| `references/check-fields.md` | Drift check: ask before adding new/changed fields |
-| `references/cli-reference.md` | The `meegle` commands + field-value rules |
-| `references/config-format.md` | The shape of the saved config |
+| `skills/meegle-buddy/SKILL.md` | Entry point + operating principles + routing |
+| `skills/meegle-buddy/references/init.md` | Guided discovery → builds your personal config |
+| `skills/meegle-buddy/references/create-card.md` | Open a work item with all required fields |
+| `skills/meegle-buddy/references/timelog.md` | Log time records (timestamps + linking) |
+| `skills/meegle-buddy/references/schedule.md` | Set estimate / effort / per-node schedule |
+| `skills/meegle-buddy/references/check-fields.md` | Drift check: ask before adding new/changed fields |
+| `skills/meegle-buddy/references/cli-reference.md` | The `meegle` commands + field-value rules |
+| `skills/meegle-buddy/references/config-format.md` | The shape of the saved config |
+| `skills/to-meegle-spec/SKILL.md` | Spec file → parent card, step by step |
+| `skills/to-meegle-tickets/SKILL.md` | Spec → task cards, step by step |
+| `skills/*/scripts/meegle_config.py` | Prints a short summary of a card type from your config, so small models don't have to read the raw JSON |
+| `skills/*/references/meegle-cli.md` | The create / read / roles / dates recipes the spec skills use |
 
 It's a thin, **discovery-driven** layer over the `meegle` CLI: it learns your field map once, then drives `meegle workitem` / `meegle workflow` for you.
 
