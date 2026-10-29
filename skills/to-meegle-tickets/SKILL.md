@@ -27,9 +27,10 @@ All paths below are relative to **this skill's folder** (the folder this SKILL.m
 6. **NEVER create tasks without a parent card.** If there is none, stop and suggest
    `/to-meegle-spec`.
 7. **NEVER modify the parent card.**
-8. **Talk to the user in Thai.** Write task titles and bodies in English.
+8. **Talk to the user in their language** (the one they write in; quoted Thai lines below are
+   examples). Write task titles and bodies in English.
 
-If you are unsure what to do at any point: save the breakdown file, stop, and ask the user in Thai.
+If you are unsure what to do at any point: save the breakdown file, stop, and ask the user in the user's language.
 
 ## Step 1 — Check the setup
 
@@ -40,7 +41,7 @@ python3 scripts/meegle_config.py flow
 
 - `meegle` missing or not logged in → stop, tell the user how to install (see
   `references/meegle-cli.md`).
-- `ERROR: no meegle-buddy config` → stop. Tell the user in Thai to set up the **meegle-buddy** skill
+- `ERROR: no meegle-buddy config` → stop. Tell the user in the user's language to set up the **meegle-buddy** skill
   first. Do not create anything.
 - `NOT SET` → ask the user which space, which type is the parent (spec) card, which type is a task,
   and which task field links to the parent. Use `CONFIG projects`, `CONFIG types` and
@@ -59,7 +60,7 @@ From now on use the keys printed by `CONFIG flow`: `project_key`, `task_type_key
 - Read the parent card:
   `meegle workitem get --project-key <project_key> --work-item-id <parent_id> --fields _all --format json`
 - Keep its field values. Tasks often need the same related values (for example the same product).
-- **No parent card exists?** Stop. Tell the user in Thai to run `/to-meegle-spec` first.
+- **No parent card exists?** Stop. Tell the user in the user's language to run `/to-meegle-spec` first.
 
 ## Step 3 — Read what a task card needs
 
@@ -116,7 +117,7 @@ renaming a shared column): do not force them into one slice. Use three kinds of 
 
    One table row per slice (columns from step 4), plus a `Meegle id` column that stays empty for
    now. **Do not commit it** (rule 2).
-2. Show the table in Thai and ask:
+2. Show the table in the user's language and ask:
    - ขนาดของแต่ละ task โอเคไหม (ใหญ่ไป / เล็กไป)
    - ลำดับ blocked-by ถูกไหม
    - ควรรวมหรือแยก task ไหนเพิ่มไหม
@@ -125,7 +126,7 @@ renaming a shared column): do not force them into one slice. Use three kinds of 
 
 ## Step 6 — One confirmation for the whole batch
 
-Ask exactly this in Thai, with the final table:
+Ask exactly this in the user's language, with the final table:
 
 > จะสร้าง task ทั้งหมด <N> ใบใน Meegle ใต้การ์ด <parent_id> ตามตารางนี้ ยืนยันไหมครับ
 
@@ -151,7 +152,7 @@ Read `references/meegle-cli.md` **in full** first.
 
 ## Done
 
-Report in Thai:
+Report in the user's language:
 
 - the breakdown file path
 - every created task: id, title, people

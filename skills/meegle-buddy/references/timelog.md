@@ -1,13 +1,13 @@
 # Log time (Time Records)
 
-Goal: lay out the day's work as time records — each with start/end (or duration), a description, and a link to a parent card — using the discovered `timelog` mapping so nothing lands in the wrong field. Talk to the user in Thai. Commands + `field_value` string rules: [cli-reference.md](cli-reference.md).
+Goal: lay out the day's work as time records — each with start/end (or duration), a description, and a link to a parent card — using the discovered `timelog` mapping so nothing lands in the wrong field. Talk to the user in their language. Commands + `field_value` string rules: [cli-reference.md](cli-reference.md).
 
 ## Step 1 — setup + space
 
 - Ensure config exists (else run [init](init.md)).
 - Pick the space (named, or `default_project_key`). Read its project file.
 - Find the type with `role: "timerecord"`. If the space has none, tell the user it can't log time here and offer another space.
-- **Quick required-field check (LIGHT):** run the LIGHT check from [check-fields.md](check-fields.md) on the timerecord type before logging (one `meta-create-fields` call, cached once per conversation). If a field just became required, ask the user (Thai) and update the config first. For a full review the user can run "เช็ค field / sync meegle".
+- **Quick required-field check (LIGHT):** run the LIGHT check from [check-fields.md](check-fields.md) on the timerecord type before logging (one `meta-create-fields` call, cached once per conversation). If a field just became required, ask the user (in the user's language) and update the config first. For a full review the user can run "เช็ค field / sync meegle".
 
 ## Step 2 — ask the day's shape
 
@@ -49,7 +49,7 @@ For every slot, use the type's `timelog` mapping from the config:
 
 ## Step 5 — confirm, then create each record
 
-Show the full day's plan in Thai as a table (time → task → linked card) plus total hours. Wait for "โอเค / ลงเลย".
+Show the full day's plan in the user's language as a table (time → task → linked card) plus total hours. Wait for "โอเค / ลงเลย".
 
 A time record is a work item of the timerecord type:
 
@@ -93,4 +93,4 @@ meegle workitem query --project-key <PK> \
 
 If the user says "the card shows Empty" but MQL shows the link **is** set, it's just a **stale UI cache** — tell them to hard-refresh (Cmd/Ctrl+Shift+R). `workitem get` brief also omits relation fields, so always check with MQL, not `get`.
 
-Report success in Thai (how many records, total hours). If a day looks short (e.g. a known recurring meeting is missing), gently ask — but never invent entries.
+Report success in the user's language (how many records, total hours). If a day looks short (e.g. a known recurring meeting is missing), gently ask — but never invent entries.

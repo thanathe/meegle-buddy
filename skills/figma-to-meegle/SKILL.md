@@ -18,7 +18,7 @@ All paths below are relative to **this skill's folder**. `CAPTURE` means
    screenshot of a whole section/page and post that. The script already splits; do not undo it.
 2. **NEVER create or update a card, or post comments, before the user says yes** (step 5).
 3. **Never invent** keys, option ids or estimates. Card fields come from the **meegle-buddy**
-   config and the user. If meegle-buddy is not set up → stop and say so in Thai.
+   config and the user. If meegle-buddy is not set up → stop and say so in the user's language.
 4. **The notes are the designer's words.** Put them in the description as written (translate only
    if the user asks). Do not add requirements the design does not show; put your own questions
    under "Open questions".
@@ -57,9 +57,9 @@ python3 scripts/figma_capture.py check   # which Figma token source works (never
   failed (not set / missing / unreadable / HOME it used). Then, in this order:
   1. The harness has the token under another variable name, or in a file you can read → run with
      `FIGMA_TOKEN="$<VAR>"` or `FIGMA_TOKEN_FILE=<path>` in front of each `CAPTURE` command.
-  2. A Figma MCP is available → use **Fallback: Figma MCP** below. Tell the user (Thai) what is
+  2. A Figma MCP is available → use **Fallback: Figma MCP** below. Tell the user (in the user's language) what is
      lost: no automatic notes-to-screen matching, no flow, no duplicate check, no component check.
-  3. Neither → ask the user (Thai) to make a personal access token: Figma → Settings → Security →
+  3. Neither → ask the user (in the user's language) to make a personal access token: Figma → Settings → Security →
      Personal access tokens → scope **File content: Read**, and save it themselves (never paste
      it in chat), as one line in `~/.claude/meegle-buddy/figma_token`:
      - macOS: `pbpaste > ~/.claude/meegle-buddy/figma_token && chmod 600 ~/.claude/meegle-buddy/figma_token`
@@ -97,7 +97,7 @@ What the plan prints:
   the start of every row). **`PART, NOT A FULL SCREEN`** — a modal or dropdown drawn on its own.
 - **`SUGGESTED: --only ...`** — every screen except the repeats.
 
-Show the user the screen list (Thai) with the suggested `--only`, and ask:
+Show the user the screen list (in the user's language) with the suggested `--only`, and ask:
 - ตัดจอซ้ำตามที่แนะนำไหม / จอ PART (modal ลอย) จะเก็บไว้ไหม
 - ถ้าสคริปต์ยังไม่แยกจอ (เจอ 1 จอ ทั้งที่จริงมีหลายจอ) → ส่ง link ของ section หรือของแต่ละจอแทน
 - ถ้ามันแยกจอที่ควรเป็นจอเดียว → ใช้ `--single`
@@ -134,7 +134,7 @@ recent. They give you the team's **title pattern**, **description structure** an
 values** this product uses (project, tags, category, component). Use them as suggestions; the
 user confirms.
 
-Decide with the user (Thai), per feature card from (a):
+Decide with the user (in the user's language), per feature card from (a):
 
 | Card state | Do |
 |---|---|
@@ -199,12 +199,12 @@ short and in the team's usual language.
 </description-template>
 
 Leave out "Components" when there is no figma-build-kit cache for the file. If the user has
-figma-build-kit, mention (Thai example): "ไฟล์นี้ยังไม่ได้ sync design system ใน figma-build-kit — ถ้า
+figma-build-kit, mention (Thai example — say it in the user's language): "ไฟล์นี้ยังไม่ได้ sync design system ใน figma-build-kit — ถ้า
 sync ก่อน จะบอกได้ว่าจอไหนใช้ component กลาง / จอไหนต้องทำใหม่". Do not run the sync yourself.
 
 ## Step 5 — One confirmation for everything
 
-Show (Thai), for **each** card: title, fields, description, and its screens in order. Then ask once:
+Show (in the user's language), for **each** card: title, fields, description, and its screens in order. Then ask once:
 
 > จะเปิด <K> การ์ด และแนบรูปรวม <N> คอมเมนต์ (การ์ดละ: <card → count>) ยืนยันไหมครับ
 
@@ -247,7 +247,7 @@ writes it (page, section id, frame ids). Touch nothing else in that cache.
 
 ## Done
 
-Report in Thai: each card id + link and its comment count, any screen that failed, the
+Report in the user's language: each card id + link and its comment count, any screen that failed, the
 contradictions and open questions, and where the PNGs are.
 
 ## Fallback: Figma MCP (no token for the script)

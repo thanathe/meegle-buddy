@@ -224,7 +224,7 @@ Returns `"success"`. The owner inherited from the assignee role is reused via `o
 | `creating ... missing template` | add `{"field_key":"template","field_value":"<id>"}` |
 | `node not found` | get the real node state_key via `workflow get-node` — don't guess |
 | `TOOL_DISCOVERY_FAILED` (dynamic commands) | server-side tool discovery failed (network/backend) — local commands (`auth`, `config`, `inspect`) still work; retry with `--refresh`, or later |
-| auth error | tell the user (Thai) to `meegle auth login`, then retry |
+| auth error | tell the user (in the user's language) to `meegle auth login`, then retry |
 | role update via fields rejected | use `--role-operate`, not `--fields` |
 | `need STRUCT type, but got: STRING` (on `create`) | send the same fields through `-P '{"fields":[…]}'` |
 | `ErrFieldRequired` / `必填` | the message lists **every** still-missing field at once — read the keys from it, ask the user for the values, retry once. If `meta-create-fields` called the field optional, it is a conditional rule: record it (`check-fields.md`) |

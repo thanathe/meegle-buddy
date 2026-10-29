@@ -3,6 +3,11 @@
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
 ## [Unreleased]
+### Changed
+- **All skills talk to the user in the user's language** (the language they write in) instead of
+  always Thai. The quoted Thai phrases in the instructions stay as examples. Specs, task titles and
+  bodies are still written in English.
+
 ### Added
 - **`figma-to-meegle`** skill — opens a task from a Figma link. `scripts/figma_capture.py` splits
   the link into screens and exports **one PNG per screen** (never one combined shot). It reads

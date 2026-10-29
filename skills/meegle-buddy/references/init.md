@@ -1,6 +1,6 @@
 # Init — guided first-run setup (and adding/refreshing projects)
 
-Goal: build the user's personal config under `~/.claude/meegle-buddy/` by **discovering** their spaces, work-item types, create-required fields, roles, and workflow nodes — so later actions need no field IDs and never miss a required field. Talk to the user in Thai throughout. This is the one place where you do the careful thinking; keep it patient and clear.
+Goal: build the user's personal config under `~/.claude/meegle-buddy/` by **discovering** their spaces, work-item types, create-required fields, roles, and workflow nodes — so later actions need no field IDs and never miss a required field. Talk to the user in their language throughout. This is the one place where you do the careful thinking; keep it patient and clear.
 
 Run this when: no config exists yet, the user wants to add another project, or fields/workflows changed and need a refresh. All commands use the **`meegle`** CLI — see [cli-reference.md](cli-reference.md).
 
@@ -11,7 +11,7 @@ command -v meegle || echo "MISSING"
 meegle auth status --format json
 ```
 
-If `meegle` is missing or auth fails, stop and guide the user (in Thai) to install/log in (`meegle auth login`). Don't continue until `auth status` shows authenticated.
+If `meegle` is missing or auth fails, stop and guide the user (in the user's language) to install/log in (`meegle auth login`). Don't continue until `auth status` shows authenticated.
 
 ```bash
 mkdir -p ~/.claude/meegle-buddy/projects
@@ -41,7 +41,7 @@ Ask which Meegle space(s) the user works in. **Prefer the slug from the URL** �
    meegle project search --project-key "<name>" --format json   # returns projects[] (name, project_key, simple_name=slug)
    ```
    - Exactly one hit → grab its `simple_name` (slug) and use that as the canonical `project_key`.
-   - **`projects: []` (empty)** → the name wasn't an exact match. **Don't give up or retry name variants — ask for the slug/URL** (Thai): "หาด้วยชื่อนี้ไม่เจอครับ (ระบบต้องตรงเป๊ะ) — ขอ slug จาก URL หรือพาสต์ลิงก์ space มาได้ไหมครับ?" then resolve via step 1.
+   - **`projects: []` (empty)** → the name wasn't an exact match. **Don't give up or retry name variants — ask for the slug/URL** (in the user's language): "หาด้วยชื่อนี้ไม่เจอครับ (ระบบต้องตรงเป๊ะ) — ขอ slug จาก URL หรือพาสต์ลิงก์ space มาได้ไหมครับ?" then resolve via step 1.
    - Multiple hits → show them and let the user pick.
 
 3. Store the **slug** as `project_key` in the config (works everywhere, human-recognizable).
@@ -50,7 +50,7 @@ Save each chosen space into `config.json` → `spaces[]` (project_key = the slug
 
 ## Step 2 — defaults
 
-Ask (Thai), with sensible defaults:
+Ask (in the user's language), with sensible defaults:
 - "ปกติเข้างานกี่โมงครับ?" → `work_start_default` (default 09:00)
 - Confirm lunch 12:00–13:00 (skipped in timelog) → `lunch`
 
@@ -64,7 +64,7 @@ For **each** chosen space:
 meegle workitem meta-types --project-key <PK> --format json
 ```
 
-Show the types in Thai and ask which they care about:
+Show the types in the user's language and ask which they care about:
 
 > "ใน <space> มี work item แบบนี้ จะใช้เปิดการ์ด/ลงงานแบบไหนบ้างครับ?"
 
@@ -106,11 +106,11 @@ Inspect its fields and identify by name (English or Thai), storing under `timelo
 - `description_field` — the required text field for the work summary.
 - `link_field` + `link_value_type` — how a record attaches to its parent card (usually a `workitem_related_select` field). Learn the parent-link field by reading an existing time record (`meegle workitem get`/`query`).
 
-If auto-mapping is unclear, show candidate fields to the user (Thai, AskUserQuestion) and let them confirm. Getting this right is what makes daily logging foolproof.
+If auto-mapping is unclear, show candidate fields to the user (user's language, AskUserQuestion) and let them confirm. Getting this right is what makes daily logging foolproof.
 
 ## Step 5 — save & confirm
 
-Write `~/.claude/meegle-buddy/projects/<project_key>.json` per project; update `config.json`. Summarize in Thai:
+Write `~/.claude/meegle-buddy/projects/<project_key>.json` per project; update `config.json`. Summarize in the user's language:
 
 > "ตั้งค่าเรียบร้อยครับ ✅
 > - Space: <names>
