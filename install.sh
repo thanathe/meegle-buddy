@@ -51,7 +51,7 @@ else
 fi
 
 # ── 2/3 install the skill ────────────────────────────────────────────────────
-step "2/3  Installing the skills: meegle-buddy, to-meegle-spec, to-meegle-tickets (global, all agents)"
+step "2/3  Installing the skills: meegle-buddy, to-meegle-spec, to-meegle-tickets, figma-to-meegle (global, all agents)"
 runcmd npx -y skills@latest add thanathe/meegle-buddy -g -y --skill '*'
 ok "skills installed — your agent now knows Meegle"
 

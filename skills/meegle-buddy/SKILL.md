@@ -66,6 +66,7 @@ Figure out what the user wants and load the matching reference file. **Always ma
 | (any of the above) needs a raw meegle command | See [references/cli-reference.md](references/cli-reference.md) |
 | Write a spec / PRD and open its parent card | Use the **`to-meegle-spec`** skill (same package) |
 | Break a spec into task cards | Use the **`to-meegle-tickets`** skill (same package) |
+| Open a task from a Figma link / attach screens as comments | Use the **`figma-to-meegle`** skill (same package) |
 
 ### Is the user set up yet?
 

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Figma to Meegle"
+  short_description: "Figma link to a task: one image per screen as comments, description from the design notes"
+policy:
+  allow_implicit_invocation: true
