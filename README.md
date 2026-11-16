@@ -22,14 +22,20 @@ The two spec skills never touch GitHub and never commit for you. They use the co
 ## ⚡ TL;DR install (one line)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/thanathe/meegle-buddy/main/install.sh | bash
+npx skills@latest add thanathe/meegle-buddy -g --skill '*'
 ```
 
-A friendly wizard installs all four skills (via the [`skills`](https://github.com/vercel-labs/skills) CLI, works with Claude Code and other agents), then checks the `meegle` CLI + login and tells you the exact next command if anything is missing. Prefer the raw command? `npx skills@latest add thanathe/meegle-buddy -g --skill '*'` does the skill part only.
+This installs all four skills with the [`skills`](https://github.com/vercel-labs/skills) CLI (works with Claude Code and other agents). Then check you have the `meegle` CLI and are logged in — see [Part 2](#part-2-quick-install-for-claude-code-users).
+
+Prefer a guided wizard that also checks the `meegle` CLI and login? [`install.sh`](install.sh) does that. Download it, read it, then run it:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/thanathe/meegle-buddy/main/install.sh
+bash install.sh
+```
 
 > **Installed meegle-buddy before October 2026?** The skills moved into a `skills/` folder, so
-> `skills update` may not find the old path. Reinstall once with the line above (or the raw
-> command). Your personal config in `~/.claude/meegle-buddy/` is not touched.
+> `skills update` may not find the old path. Reinstall once with the line above. Your personal config in `~/.claude/meegle-buddy/` is not touched.
 
 ---
 

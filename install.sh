@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# meegle-buddy installer — pretty one-liner setup
-#   curl -fsSL https://raw.githubusercontent.com/thanathe/meegle-buddy/main/install.sh | bash
+# meegle-buddy installer — guided setup
+#   Download, read, then run:  bash install.sh
 # Flags:  --dry-run   print what would run, change nothing
 set -euo pipefail
 

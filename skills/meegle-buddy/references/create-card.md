@@ -65,7 +65,7 @@ Capture the new work-item id from the JSON output.
   ⚠️ **Some types make roles REQUIRED at create** — a plain create then errors naming the role as "必填" (required). In that case put the roles **in the create itself**, as a field named **`role_owners`** whose `field_value` is a **stringified** array of `{role, owners}` — see "Roles that are required at create" in [cli-reference.md](cli-reference.md). `--role-operate` is ignored by `create`, and a field named `role_<project_key>_<type_key>_owner` is rejected ("field keys not found"). Record the recipe on the type's config (`create_roles`) so it is done up-front next time.
 - **Link / relation fields** (`workitem_related_*`) — these can fail **at create** with `字段「…」当前选项值已失效` even when the target id is valid. If so, create the card WITHOUT the link, then set it via a follow-up `workitem update --fields` (value = the target work-item id as a string).
 - Any field the create response shows empty but you intended to set — re-send via `workitem update`.
-- **Show under a specific story node** — if the parent is a node-driven workflow and the user wants the card under a particular node (not just the parent's rollup list), the link field is not enough. Follow [node-binding.md](node-binding.md) (the CLI can't set the node-edge; it's a web-UI/endpoint step).
+- **Show under a specific story node** — if the parent is a node-driven workflow and the user wants the card under a particular node (not just the parent's rollup list), the link field is not enough. Follow [node-binding.md](node-binding.md) (the CLI can't set the node-edge; the user clicks it in the web UI).
 
 ### Step 5 — verify before reporting done (do NOT skip)
 
