@@ -19,17 +19,10 @@ Goal: lay out the day's work as time records — each with start/end (or duratio
 
 Never hand-calculate epoch ms. Pass the result as a **string** in `field_value`.
 
+Run the bundled script (in this skill's `scripts/` folder) with the date and each clock time:
+
 ```bash
-python3 - <<'PY'
-from datetime import datetime
-from zoneinfo import ZoneInfo
-tz = ZoneInfo("Asia/Bangkok")
-def ms(date_str, hhmm):
-    h, m = map(int, hhmm.split(":"))
-    dt = datetime.strptime(date_str, "%Y-%m-%d").replace(hour=h, minute=m, tzinfo=tz)
-    return int(dt.timestamp() * 1000)
-print(ms("2026-05-31", "09:00"), ms("2026-05-31", "10:30"))   # slot start, end
-PY
+python3 <skill-dir>/scripts/bkk_ms.py 2026-05-31 09:00 10:30   # prints slot start and end ms
 ```
 
 Use the correct date when logging a past day.
