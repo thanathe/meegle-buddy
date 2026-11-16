@@ -21,7 +21,7 @@ meegle workitem meta-create-fields --project-key <PK> --work-item-type <TYPE> --
 
 Compare the returned create-required fields to the type's `create_fields` + `fields[]` in the config:
 
-- A **required** field the server returns that is **missing from the config** (or marked optional/skip in config) → **STOP and ask the user** (Thai), then update the config before continuing:
+- A **required** field the server returns that is **missing from the config** (or marked optional/skip in config) → **STOP and ask the user** (in the user's language), then update the config before continuing:
   > "field **<field name>** (ชนิด: <value_type>) ตอนนี้เป็น **ฟิลด์บังคับ** ตอนเปิด «<type>» แล้วครับ — ขอเพิ่มเข้า checklist นะครับ ใส่ค่าอะไรดี?"
 - Everything else (new *optional* fields, renamed labels, removed fields) → LIGHT mode does **not** chase these; that's the FULL sync's job. Just continue.
 
@@ -57,7 +57,7 @@ Build three lists for this type:
 
 If all three are empty → tell the user it's already up to date ("field ตรงกับระบบแล้วครับ ✅") and just bump `last_checked`.
 
-### Step 3 — ask the user about each change (Thai, AskUserQuestion)
+### Step 3 — ask the user about each change (user's language, AskUserQuestion)
 
 Don't decide for the user.
 
@@ -92,7 +92,7 @@ Since the API won't tell you, **infer them from real cards** and confirm with th
 
    Response rows are `data.<n>[].moql_field_list[]`; a field is "filled" when its `value` is non-null and `value_type` is non-empty.
 3. **Compute fill-rate per driver option.** A candidate field filled in **≥80%** of items with option X and **≈0%** elsewhere → propose the rule "when <driver> = X, <field> is required".
-4. **Confirm each proposed rule with the user (Thai)** — they can see the real form; also let them dictate rules the data can't show (small n, brand-new option):
+4. **Confirm each proposed rule with the user (in the user's language)** — they can see the real form; also let them dictate rules the data can't show (small n, brand-new option):
    > "จากการ์ดจริง ถ้า «<driver>» = «<label>» ดูเหมือน field «<name>» จะถูกบังคับกรอก (กรอก N/N ใบ) — บันทึกเป็นกฎไหมครับ?"
 5. **Save** confirmed rules under the type's `conditional_rules` (shape in [config-format.md](config-format.md)). If any `require`d field isn't in `fields[]` yet, add it now (with options, fetched the usual way).
 
@@ -100,7 +100,7 @@ Also fold in rules learned **outside** sync: whenever a create fails 必填 on a
 
 ### Step 4 — save
 
-Write the updated `projects/<project_key>.json`, set `last_checked` and `last_synced` to today. Report a short Thai summary of what changed. If the user triggered sync standalone (not inside another flow), stop here; otherwise return to the flow with the fresh fields.
+Write the updated `projects/<project_key>.json`, set `last_checked` and `last_synced` to today. Report a short summary in the user's language of what changed. If the user triggered sync standalone (not inside another flow), stop here; otherwise return to the flow with the fresh fields.
 
 **Scope:** if the user named a type, sync just that type. If they named only a space, sync every type with `role: "card"` or `"timerecord"` in that space. If they named nothing, sync the `default_project_key`.
 
@@ -108,7 +108,7 @@ Write the updated `projects/<project_key>.json`, set `last_checked` and `last_sy
 
 ## Suggesting a sync (gentle, non-blocking)
 
-When starting a create/timelog/schedule, if the project file's `last_synced` is more than ~7 days old (or missing), you may add a one-line Thai nudge — "ไม่ได้ sync field มา N วันแล้ว อยากให้เช็คก่อนไหมครับ?" — but do **not** force it. The LIGHT check already protects against missing required fields, so normal work proceeds without waiting.
+When starting a create/timelog/schedule, if the project file's `last_synced` is more than ~7 days old (or missing), you may add a one-line nudge in the user's language — "ไม่ได้ sync field มา N วันแล้ว อยากให้เช็คก่อนไหมครับ?" — but do **not** force it. The LIGHT check already protects against missing required fields, so normal work proceeds without waiting.
 
 ## Notes
 

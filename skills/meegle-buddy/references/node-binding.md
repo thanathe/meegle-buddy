@@ -21,7 +21,7 @@ If none of those give a setter (the normal case), the node binding must go throu
 
 ## Path A — guide the user to click it (works for everyone, no extra tools)
 
-Walk the user through these clicks on the Meegle web page of the parent card (phrase each step to them in Thai at runtime):
+Walk the user through these clicks on the Meegle web page of the parent card (phrase each step to them in the user's language at runtime):
 
 1. Click the target node (e.g. "Business Analysis") so the node's panel opens.
 2. In the node's child-card table, click the ▾ caret next to the **"Add …"** button → **Add current** → **This space** → pick the card type.

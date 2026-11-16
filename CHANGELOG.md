@@ -2,6 +2,33 @@
 
 All notable changes to **meegle-buddy**. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versions are the git semver tags `vMAJOR.MINOR.PATCH`. Dates are ISO (Asia/Bangkok).
 
+## [Unreleased]
+### Changed
+- **All skills talk to the user in the user's language** (the language they write in) instead of
+  always Thai. The quoted Thai phrases in the instructions stay as examples. Specs, task titles and
+  bodies are still written in English.
+
+### Added
+- **`figma-to-meegle`** skill — opens a task from a Figma link. `scripts/figma_capture.py` splits
+  the link into screens and exports **one PNG per screen** (never one combined shot). It reads
+  the designer's text notes, stickies and note-named layers, and ties each to its nearest screen.
+  When a figma-build-kit cache exists (optional), it marks each component as design-system or custom. The
+  description is written from the notes, then each screen is posted as its own comment image
+  (`attachment +upload --resource-type 14` → `comment add`). It uses the Figma REST API with a
+  personal access token, so it needs no Figma MCP and runs in non-Claude harnesses. Flow names
+  are looked up in figma-build-kit's `fileMap`, so no link is needed for known flows.
+  It also reads the flow the designer drew: connector arrows (direction taken from the
+  arrowhead), decision blocks, row titles such as Add / Edit / Delete, and the header strip's
+  design status. The token is found in env vars, a harness's Figma connector file, or a token file.
+  It falls back to the system CA bundle when Python has no certificates.
+  After the first live run in a non-Claude harness: `check` shows which token source works and why
+  the others failed; repeated screens are flagged (`SAME AS`) with a suggested `--only`, and
+  modals drawn on their own are flagged (`PART`). The skill finds `meegle` outside PATH (nvm,
+  volta, homebrew), looks at sibling cards to copy the team's title and description style, lists
+  rules the new design contradicts, splits work across several cards (FE / BE) with screens
+  assigned per card, and documents the Figma MCP fallback. Upload returns `file_url` /
+  `file_token`; read-back strips the alt text, which is expected.
+
 ## [1.1.0] — 2026-10-09
 ### Added
 - **`to-meegle-spec`** skill — turns a conversation into a spec file, then (only after the user

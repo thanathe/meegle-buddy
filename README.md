@@ -4,13 +4,14 @@ A friendly Claude **skill** that helps anyone log time and open cards in **Feish
 
 It's built to be shared with a whole team. Developers and non-developers alike can just say *"log my time today"* or *"open a card"* in plain language, and the skill asks simple questions and fills in everything correctly.
 
-The package holds three skills:
+The package holds four skills:
 
 | Skill | What it does |
 |---|---|
 | **`meegle-buddy`** | Setup, open cards, log time, estimates — the core |
 | **`to-meegle-spec`** | Turns a conversation into a spec file, then (if you say yes) a parent card that links to it |
 | **`to-meegle-tickets`** | Breaks a spec into task cards under that parent, each saying what blocks it |
+| **`figma-to-meegle`** | Opens a task from a Figma link: one image per screen as comments, description written from the designer's notes |
 
 The two spec skills never touch GitHub and never commit for you. They use the config `meegle-buddy` builds, so set that up first.
 
@@ -24,7 +25,7 @@ The two spec skills never touch GitHub and never commit for you. They use the co
 curl -fsSL https://raw.githubusercontent.com/thanathe/meegle-buddy/main/install.sh | bash
 ```
 
-A friendly wizard installs all three skills (via the [`skills`](https://github.com/vercel-labs/skills) CLI, works with Claude Code and other agents), then checks the `meegle` CLI + login and tells you the exact next command if anything is missing. Prefer the raw command? `npx skills@latest add thanathe/meegle-buddy -g --skill '*'` does the skill part only.
+A friendly wizard installs all four skills (via the [`skills`](https://github.com/vercel-labs/skills) CLI, works with Claude Code and other agents), then checks the `meegle` CLI + login and tells you the exact next command if anything is missing. Prefer the raw command? `npx skills@latest add thanathe/meegle-buddy -g --skill '*'` does the skill part only.
 
 > **Installed meegle-buddy before October 2026?** The skills moved into a `skills/` folder, so
 > `skills update` may not find the old path. Reinstall once with the line above (or the raw
@@ -101,7 +102,7 @@ This is the little program that actually talks to Feishu / Lark Project. You ins
 
 ### Step 3 — Install the skill
 
-This copies the three skills into the folders where Claude Code (and other agents) look for skills.
+This copies the four skills into the folders where Claude Code (and other agents) look for skills.
 Paste this into the Terminal and press Enter — it is the same on Mac, Linux and Windows:
 
 ```bash
@@ -109,7 +110,7 @@ npx skills@latest add thanathe/meegle-buddy -g --skill '*'
 ```
 
 > No `npx`? On the repo page click the green **"Code" → "Download ZIP"**, unzip it, and copy each
-> folder inside `skills/` (`meegle-buddy`, `to-meegle-spec`, `to-meegle-tickets`) into
+> folder inside `skills/` (`meegle-buddy`, `to-meegle-spec`, `to-meegle-tickets`, `figma-to-meegle`) into
 > `~/.claude/skills/` (Mac) or `%USERPROFILE%\.claude\skills\` (Windows).
 
 ### Step 4 — Use it 🎉
@@ -158,6 +159,7 @@ npx skills@latest add thanathe/meegle-buddy -g --skill '*'
 - **Estimate / effort / schedule:** takes the numbers you give and writes them to the right fields.
 - **Spec → parent card (`to-meegle-spec`):** writes the spec to a markdown file, then — only if you say yes — opens a parent card (Feature / Story / Requirement) that links to it.
 - **Spec → task cards (`to-meegle-tickets`):** splits a spec into thin end-to-end tasks, writes the plan to a file, and creates the cards under the parent after one confirmation.
+- **Figma → task (`figma-to-meegle`):** give it a Figma link (or a flow name, if you also use the figma-build-kit skill). It splits the link into screens, exports **one image per screen**, reads the designer's text notes beside each one, and writes the task description from them, with figma-build-kit it also lists which parts use the design system's central components and which are custom. It checks for existing cards first, opens one or more cards (e.g. FE + BE), and posts each screen as its own comment. It calls the Figma REST API with a [personal access token](https://help.figma.com/hc/en-us/articles/8085703771159) (scope *File content: Read*, set as `FIGMA_TOKEN` or saved to `~/.claude/meegle-buddy/figma_token`), so it needs no Figma MCP and works in any agent harness (DeepSeek, Qwen, …). No token? It falls back to a Figma MCP if you have one.
 - **Keeps up with changing fields:** before each action it re-checks the live fields; if your team added a new field or made one required, it asks whether to include it — so it never goes stale while your setup is still changing.
 
 ## What it does **not** do
@@ -214,6 +216,8 @@ Because it lives in your home folder, your field map stays **private to you** an
 | `skills/meegle-buddy/references/config-format.md` | The shape of the saved config |
 | `skills/to-meegle-spec/SKILL.md` | Spec file → parent card, step by step |
 | `skills/to-meegle-tickets/SKILL.md` | Spec → task cards, step by step |
+| `skills/figma-to-meegle/SKILL.md` | Figma link → task + one comment image per screen |
+| `skills/figma-to-meegle/scripts/figma_capture.py` | Splits a Figma link into screens, reads notes, exports one PNG per screen (REST API, no MCP) |
 | `skills/*/scripts/meegle_config.py` | Prints a short summary of a card type from your config, so small models don't have to read the raw JSON |
 | `skills/*/references/meegle-cli.md` | The create / read / roles / dates recipes the spec skills use |
 

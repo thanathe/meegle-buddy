@@ -217,14 +217,14 @@ Returns `"success"`. The owner inherited from the assignee role is reused via `o
 | `need STRUCT type, but got: STRING` (on `update-node`) | don't pass `--node-schedule '<json>'` — use `--set node_schedule.<key>=<val>` dot-path |
 | `unsupported type:float64, expected type:LIST` (owners) | set owners with array-index: `--set 'node_schedule.owners[0]=<key>'`, not `owners=<key>` |
 | `计算字段值不可编辑` / `无权编辑 "<field>"` | either the field is **auto-calculated/rollup** (e.g. Complexity, parent estimate) — don't write it; OR you're **not the card's owner/creator** (can't edit others' cards) — post a comment or ask the owner instead |
-| `create comment fail` (Service Internal Error, on `comment add`) | comment content must be **plain single-line text** — drop multi-line / markdown / emoji; also ensure `--project-key` is passed (`project_key is empty` if omitted) |
+| `create comment fail` (Service Internal Error, on `comment add`) | comment content must be **single-line** — drop line breaks / emoji (a one-line image `![alt](<file_url>)<!--<file_token>-->` after `attachment +upload --resource-type 14` works); also ensure `--project-key` is passed (`project_key is empty` if omitted) |
 | `字段「…」当前选项值已失效` (relation/link at create) | create WITHOUT the link, then set it via a follow-up `workitem update --fields` |
 | relation/link set returns OK but the value reads back **null** (no error) | **wrong target TYPE** — the related-select only accepts the type(s) in its `related_work_item_info` (`meta-fields`); pass a wid of that type, then verify via MQL. (If MQL is set but the card shows "Empty", it's a stale UI cache — hard-refresh.) |
 | `invalid select option` | use a valid option_id from `meta-fields`; if ambiguous, ask the user |
 | `creating ... missing template` | add `{"field_key":"template","field_value":"<id>"}` |
 | `node not found` | get the real node state_key via `workflow get-node` — don't guess |
 | `TOOL_DISCOVERY_FAILED` (dynamic commands) | server-side tool discovery failed (network/backend) — local commands (`auth`, `config`, `inspect`) still work; retry with `--refresh`, or later |
-| auth error | tell the user (Thai) to `meegle auth login`, then retry |
+| auth error | tell the user (in the user's language) to `meegle auth login`, then retry |
 | role update via fields rejected | use `--role-operate`, not `--fields` |
 | `need STRUCT type, but got: STRING` (on `create`) | send the same fields through `-P '{"fields":[…]}'` |
 | `ErrFieldRequired` / `必填` | the message lists **every** still-missing field at once — read the keys from it, ask the user for the values, retry once. If `meta-create-fields` called the field optional, it is a conditional rule: record it (`check-fields.md`) |

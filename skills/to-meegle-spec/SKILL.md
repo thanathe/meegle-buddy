@@ -20,11 +20,12 @@ All paths below are relative to **this skill's folder** (the folder this SKILL.m
 3. **NEVER create the Meegle card without the user saying yes** in step 5.
 4. **NEVER invent** a project key, type key, field key, option id, work item id, user key, estimate,
    priority or date. Keys come from `CONFIG`; everything else comes from the user.
-5. **Talk to the user in Thai.** Write the spec itself in English.
+5. **Talk to the user in their language** (the one they write in; quoted Thai lines below are
+   examples). Write the spec itself in English.
 6. **Do not interview the user.** Build the spec from what the conversation already says. The only
    questions are in steps 2 and 5, and the setup questions in step 6 if they are needed.
 
-If you are unsure what to do at any point: write the file, stop, and ask the user in Thai.
+If you are unsure what to do at any point: write the file, stop, and ask the user in the user's language.
 
 ## Step 1 — Read the context
 
@@ -38,7 +39,7 @@ If you are unsure what to do at any point: write the file, stop, and ask the use
 Decide where the feature will be tested. Prefer a seam that already exists, at the highest level
 possible. One seam is ideal.
 
-Ask the user in Thai, for example:
+Ask the user in the user's language, for example:
 
 > จะทดสอบฟีเจอร์นี้ที่จุด `<seam>` ตรงกับที่คิดไว้ไหมครับ
 
@@ -58,12 +59,12 @@ Wait for the answer. Adjust if they disagree.
 
 ## Step 4 — Show the user
 
-Tell the user in Thai where the file is, and give a 3–5 line summary. Let them ask for changes.
+Tell the user in the user's language where the file is, and give a 3–5 line summary. Let them ask for changes.
 Edit the file until they are happy.
 
 ## Step 5 — Ask before creating the Meegle card (one question)
 
-Ask exactly this, in Thai:
+Ask exactly this, in the user's language:
 
 > spec เขียนไว้ที่ `<path>` แล้วครับ จะให้เปิดการ์ดใน Meegle ด้วยไหม
 > (ถ้างานยังไม่ได้รับอนุมัติ แนะนำให้เก็บเป็นไฟล์ไว้ก่อนครับ)
@@ -83,7 +84,7 @@ python3 scripts/meegle_config.py flow
 ```
 
 - `meegle` missing or not logged in → stop, tell the user how to install (see `meegle-cli.md`).
-- `ERROR: no meegle-buddy config` → stop. Tell the user in Thai to set up the **meegle-buddy** skill
+- `ERROR: no meegle-buddy config` → stop. Tell the user in the user's language to set up the **meegle-buddy** skill
   first (it discovers their spaces and fields). Do not create anything.
 - `NOT SET` → do 6b once. Otherwise skip to 6c.
 
@@ -124,7 +125,7 @@ python3 scripts/meegle_config.py set-flow --project <P> --spec-type <SPEC_TYPE> 
 
 ### 6d. Confirm, create, check
 
-1. Show the user a Thai summary: every field, its value, and what it means. Wait for an explicit yes.
+1. Show the user a summary in the user's language: every field, its value, and what it means. Wait for an explicit yes.
 2. Run `meegle workitem create` (shape in `meegle-cli.md`).
 3. Read the card back with `meegle workitem get` and check name, required fields and roles.
 4. Give the user the card id (and the URL if the response has one).
@@ -139,7 +140,7 @@ Do not break the work down on your own.
 
 ## Done
 
-The task ends after step 5 (no card) or step 6 (card created). Report in Thai:
+The task ends after step 5 (no card) or step 6 (card created). Report in the user's language:
 
 - the spec file path
 - the Meegle card id, if one was created

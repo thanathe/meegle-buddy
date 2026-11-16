@@ -1,6 +1,6 @@
 # Estimate / effort / schedule
 
-Goal: set a card's estimate, effort, and schedule from numbers the user gives — **no complexity scoring, no auto-derivation**. You ask for the estimate and dates; you only convert units and write them to the right fields from the config. Talk to the user in Thai. Commands + `field_value` string rules: [cli-reference.md](cli-reference.md).
+Goal: set a card's estimate, effort, and schedule from numbers the user gives — **no complexity scoring, no auto-derivation**. You ask for the estimate and dates; you only convert units and write them to the right fields from the config. Talk to the user in their language. Commands + `field_value` string rules: [cli-reference.md](cli-reference.md).
 
 ## What the config gives you
 
@@ -16,7 +16,7 @@ From the card type's `schedule` block (see config-format.md):
 
 No `schedule` block → the type doesn't support estimation; tell the user.
 
-> **Quick required-field check (LIGHT):** before writing, run the LIGHT check from [check-fields.md](check-fields.md) on this card type (one `meta-create-fields` call, cached once per conversation). If a schedule/effort field just became required, ask the user (Thai) and update the config first. For a full review of node/optional fields, the user can run "เช็ค field / sync meegle".
+> **Quick required-field check (LIGHT):** before writing, run the LIGHT check from [check-fields.md](check-fields.md) on this card type (one `meta-create-fields` call, cached once per conversation). If a schedule/effort field just became required, ask the user (in the user's language) and update the config first. For a full review of node/optional fields, the user can run "เช็ค field / sync meegle".
 
 ## Step 1 — ask the user (plain terms)
 
@@ -75,4 +75,4 @@ Lay node timelines sequentially (one node after the previous) unless the user sa
 
 ## Step 5 — confirm
 
-Before writing, show the user in Thai: effort (with unit), schedule dates, and any per-node plan. Wait for "โอเค". After writing, confirm success and show the card link.
+Before writing, show the user in the user's language: effort (with unit), schedule dates, and any per-node plan. Wait for "โอเค". After writing, confirm success and show the card link.

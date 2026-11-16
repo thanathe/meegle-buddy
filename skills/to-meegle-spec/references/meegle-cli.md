@@ -10,7 +10,7 @@ command -v meegle
 meegle auth status --format json        # want "authenticated": true
 ```
 
-Not installed or not logged in → stop. Tell the user (in Thai) to run, in their own terminal:
+Not installed or not logged in → stop. Tell the user (in the user's language) to run, in their own terminal:
 
 ```bash
 npx @lark-project/meegle@latest install

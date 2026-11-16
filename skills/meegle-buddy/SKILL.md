@@ -12,11 +12,11 @@ The skill **never hardcodes** project keys, work-item types, field keys, templat
 
 ## Operating principles (read every time)
 
-1. **Talk to the user in Thai.** All questions, confirmations, and summaries you show the user are in Thai (e.g. "เข้างานกี่โมงครับ?", "จะลงการ์ดในโปรเจคไหน?"). These internal instructions stay in English for reliability.
+1. **Talk to the user in their language** — the language they write to you in. All questions, confirmations, and summaries you show the user are in that language. The quoted phrases in these files are Thai examples (e.g. "เข้างานกี่โมงครับ?" = "What time did you start work?"); say the same thing in the user's language. These internal instructions stay in English for reliability.
 2. **The hard thinking happens at init, not at run time.** Discovery and field-mapping are done once and saved. Day-to-day actions (open card / log time) should be mechanical: read config → ask the user plain questions → fill fields → submit. This keeps it cheap and reliable on small models.
 3. **Never invent field keys, type keys, project keys, template IDs, or node IDs.** Always read them from the saved config (`~/.claude/meegle-buddy/`). If something you need is not in the config, run discovery (see [init](references/init.md)) — do not guess.
 4. **Fill every required field — including conditional ones.** Before any create/update, check the config's required list (from `meta-create-fields`) for that type and make sure each one has a value. Also apply the type's `conditional_rules`: some fields become required only when another field has a certain value (Meegle form linkage — **not exposed by the API**, discovered at sync; see [check-fields](references/check-fields.md)). If a required value is missing, ask the user. Never submit a partial card.
-5. **Confirm before writing.** Always show the user a plain-Thai summary of exactly what will be created/updated and wait for "ok / โอเค / ลงเลย" before calling any `meegle ... create|update|workflow update-node` command.
+5. **Confirm before writing.** Always show the user a plain-language summary of exactly what will be created/updated and wait for "ok / โอเค / ลงเลย" before calling any `meegle ... create|update|workflow update-node` command.
 6. **Compute timestamps with Python (Bangkok tz), never by hand.** See [timelog](references/timelog.md).
 7. **No complexity scoring.** This skill deliberately does NOT estimate complexity or auto-derive effort from it. For estimate/effort/schedule it simply asks the user for the numbers and converts units. See [schedule](references/schedule.md).
 8. **`field_value` is ALWAYS a string.** Every command is `meegle ... --format json` (NOT `lark-cli`). Field values go in repeated `--fields '{"field_key":"...","field_value":"..."}'` flags, and the value is always a *string* — arrays/objects must be JSON-stringified. This is the #1 cause of "logged wrong / rejected". See [cli-reference](references/cli-reference.md).
@@ -32,7 +32,7 @@ command -v meegle                   # must exist
 meegle auth status --format json    # must show "authenticated": true
 ```
 
-**Easiest setup (CLI ≥ 1.0.11):** one command does install/upgrade + host config + login (browser or device code) in a single wizard — tell the user (Thai) to run it in their own terminal:
+**Easiest setup (CLI ≥ 1.0.11):** one command does install/upgrade + host config + login (browser or device code) in a single wizard — tell the user (in the user's language) to run it in their own terminal:
 
 ```bash
 npx @lark-project/meegle@latest install
@@ -40,9 +40,9 @@ npx @lark-project/meegle@latest install
 
 (Manual fallback: `npm install -g @lark-project/meegle`, then the host + device-code login below.)
 
-If `meegle` is missing or not authenticated, stop and walk the user through setup (in Thai) — see the "Prerequisites" section of the [README](https://github.com/thanathe/meegle-buddy#readme). Do not try to do Meegle work until `auth status` succeeds.
+If `meegle` is missing or not authenticated, stop and walk the user through setup (in the user's language) — see the "Prerequisites" section of the [README](https://github.com/thanathe/meegle-buddy#readme). Do not try to do Meegle work until `auth status` succeeds.
 
-**Login guidance (important):** when guiding login, always use the **device-code** flow, NOT plain `meegle auth login`. The plain flow relies on auto-opening a browser + a localhost callback, which hangs or fails unpredictably inside agent shells (Claude Code), SSH, and some terminals. Tell the user (Thai) to run:
+**Login guidance (important):** when guiding login, always use the **device-code** flow, NOT plain `meegle auth login`. The plain flow relies on auto-opening a browser + a localhost callback, which hangs or fails unpredictably inside agent shells (Claude Code), SSH, and some terminals. Tell the user (in the user's language) to run:
 
 ```bash
 meegle config set host <their-host>     # e.g. project.larksuite.com / project.feishu.cn / meegle.com
@@ -66,6 +66,7 @@ Figure out what the user wants and load the matching reference file. **Always ma
 | (any of the above) needs a raw meegle command | See [references/cli-reference.md](references/cli-reference.md) |
 | Write a spec / PRD and open its parent card | Use the **`to-meegle-spec`** skill (same package) |
 | Break a spec into task cards | Use the **`to-meegle-tickets`** skill (same package) |
+| Open a task from a Figma link / attach screens as comments | Use the **`figma-to-meegle`** skill (same package) |
 
 ### Is the user set up yet?
 
@@ -75,7 +76,7 @@ Before doing create/timelog/schedule, check for the config:
 ls ~/.claude/meegle-buddy/config.json 2>/dev/null && echo "READY" || echo "NEEDS_INIT"
 ```
 
-- `NEEDS_INIT` → run [init](references/init.md) first (tell the user in Thai you'll set things up quickly).
+- `NEEDS_INIT` → run [init](references/init.md) first (tell the user in the user's language you'll set things up quickly).
 - `READY` → proceed, but if the chosen project has no saved profile under `~/.claude/meegle-buddy/projects/`, run the per-project part of init for it.
 
 ## The config (where everything discovered lives)
